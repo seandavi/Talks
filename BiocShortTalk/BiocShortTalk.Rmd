@@ -62,6 +62,24 @@ output:
 }
 </style>
 
+## Overview
+
+Background and introduction
+
+Two example workflows
+
+- Principle components analysis of public gene expression data
+- Somatic variant analysis of TCGA melanoma data
+
+Additional functionality
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+> These slides were written in R and all plots and results are generated from code in the slides--reproducible research in action!
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
 ```
@@ -221,11 +239,127 @@ ggplot(mdsvals, aes(x=V1,y=V2,shape=Normal,color=Type)) +
     geom_point(size=4, alpha=0.6) + theme(text=element_text(size = 18))
 ```
 
+
+
 ## Example 1: Build a PCA plot from Public Data
 
 ```{r ref.label='mdsplot',echo=FALSE,fig.align='center'}
 ```
 
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+<div style="width:80%; display: block; margin: 0 auto;">
+![Imgur](https://i.imgur.com/c9axxjI.png)
+</div>
+
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+Use the [GenomicDataCommons](https://bioconductor.org/packages/GenomicDataCommons) package to find
+and download variants from the TCGA cutaneous melanoma dataset.
+
+```{r gdc_getdata,cache=TRUE, echo=TRUE, results='hide'}
+library(GenomicDataCommons)
+fnames = files() %>% 
+    GenomicDataCommons::filter(~ cases.project.project_id=='TCGA-SKCM' & 
+        data_type=='Masked Somatic Mutation' &
+        data_format=='MAF' &
+        analysis.workflow_type=='MuTect2 Variant Aggregation and Masking') %>%
+    ids() %>%
+    gdcdata()
+```
+
+And now take those data directly to [maftools](https://bioconductor.org/package/maftools) for 
+analysis and visualization.
+
+```{r mafsummary, cache=TRUE, echo=TRUE, results='hide'}
+library(maftools)
+melanoma = read.maf(maf = fnames[1])
+```
+
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+```{r plotmafsummary,fig.align='center'}
+library(maftools)
+plotmafSummary(melanoma)
+```
+
+
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+```{r oncoplot, fig.align='center'}
+library(maftools)
+oncoplot(maf=melanoma,top=15,genes = getGeneSummary(melanoma)$Hugo_Symbol[3:20])
+```
+
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+```{r oncodrive, cache=TRUE, fig.height=5, echo=TRUE, results='hide'}
+v = oncodrive(maf = melanoma, AACol = 'HGVSp_Short', minMut = 5, pvalMethod = 'zscore')
+plotOncodrive(v,labelSize=40,fdrCutOff = 0.1)
+```
+
+## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
+
+```{r lollipop, cache=TRUE}
+lollipopPlot(maf = melanoma, gene = 'BRAF', AACol = 'HGVSp_Short', 
+             showMutationRate = TRUE, domainLabelSize = 3, defaultYaxis = FALSE)
+```
+
+## Other functionality: Ranges
+
+<div style="width:80%; display: block; margin: 0 auto;">
+![Imgur](https://i.imgur.com/wYL8bT6.png)
+</div> 
+
+## Other functionality: Sequencing
+
+<div style="width:80%; display: block; margin: 0 auto;">
+![Imgur](https://i.imgur.com/BTYXWjA.png)
+</div>
+
+## Data access and management
+
+Hubs and data packages give users access to curated and versioned public data.
+
+- AnnotationHub
+    - Reference genomes
+    - Gene models
+    - ENCODE data
+    - UCSC Tracks
+- ExperimentHub
+    - Curated and versioned public datasets (TCGA, 1000Genomes)
+    - Searchable metadata
+- Experiment data packages
+    - Easy sharing of data within lab, institute, or internationally
+
+## Reproducible research
+
+- Everything in bioconductor is version controlled and versioned. 
+- Package build system guarantees compatibility between packages.
+- Documentation and workflows are "literate", so if they do not work or do not match
+code, Bioc build system alerts developer.
+- Strong reliance on interoperability to reduce "reinvention" (and decrease mistakes)
+
+## Questions
+
+- https://bioconductor.org
+- https://support.bioconductor.org
+- Package documentation
+- Package vignettes (or workflows)
+- https://f1000research.com/articles/4-217/v2
+- https://www.youtube.com/user/bioconductor
+
+
+Contact me:
+
+- https://seandavi.github.io/
+- https://twitter.com/seandavis12
+- mailto:seandavi@gmail.com or mailto:sean.davis@nih.gov
+
+
+
+
 [R]: https://cran.r-project.org/
 [GEOquery]: https://bioconductor.org/packages/GEOquery
 [GSE103512]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103512
+[multidimensional scaling]: https://en.wikipedia.org/wiki/Multidimensional_scaling
