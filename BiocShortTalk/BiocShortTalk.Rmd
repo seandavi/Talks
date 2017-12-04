@@ -1,0 +1,158 @@
+---
+title: "Bioconductor: software for orchestrating high-throughput genomics data analysis"
+author: |
+  <br/>
+  Sean Davis, MD, PhD<br/>
+  Center for Cancer Research</br>
+  National Cancer Institute</br>
+  <a href="https://twitter.com/seandavis12">@seandavis12</a><br/>
+  <a href="https://seandavi.github.io">https://seandavi.github.io</a>
+date: "December 4, 2018"
+output: 
+  revealjs::revealjs_presentation:
+    theme: night
+    highlight: pygments
+    center: false # do not center vertically
+    reveal_options:
+      slideNumber: true
+      previewLinks: true
+---
+<style type="text/css">
+  h1.title {
+    text-align: left;
+    font-style: italic;
+  }
+  .reveal .author,.reveal .date {
+    text-align: left;
+    text-size: 0.8em;
+    margin-left: 100px;
+  }
+  p {
+    text-align: left;
+  }
+  .reveal ul, ol {
+    display: block;
+    padding-left: 30px;
+  }
+  .reveal img {
+     display: block;
+     align: center;
+  }
+  blockquote p {
+    text-align: center;
+  }
+  #left {
+  left:-8.33%;
+  text-align: left;
+  float: left;
+  width:50%;
+  z-index:-10;
+}
+
+    #wrap { width: 1000px; height: 600px; padding: 0; overflow: hidden; }
+    #frame { width: 1000px; height: 600px; border: 1px solid black; }
+
+#right {
+  left:31.25%;
+  top: 75px;
+  float: right;
+  text-align: right;
+  z-index:-10;
+  width:50%;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+```
+
+## Introduction
+
+<div id="left">
+
+![img](http://bioconductor.org/images/logo/jpg/bioconductor_logo_rgb.jpg)
+![](https://s3.amazonaws.com/dev.assets.neo4j.com/wp-content/uploads/data-science-efficiency-neo4j-and-r.png)
+
+</div>
+
+<div id="right">
+Analysis and comprehension of high-throughput biological data
+
+- Started in 2002
+- Builds on [R], which includes 14,376 "contributed" software packages and more than 2 million users worldwide
+
+Bioconductor is well-used and well-respected
+
+- More than 50,000 unique downloads per month
+- Approximately 21,700 PubmedCentral citations
+
+</div>
+
+## But what *is* Bioconductor?
+
+> Bioconductor is a Toolkit for high-throughput biological data science built with reproducible computational research as a *core value*.
+
+Bioconductor software supports all aspects the biological data science workflow.
+
+- Data import and export
+- Data management and accessibility
+- Data integration, including with public data
+- Analysis and statistics
+- High-level visualization
+- Efficiency and reproducibility, even at scale
+
+## Bioconductor Packages
+
+```{r biocpkgdata, cache=TRUE}
+require(dplyr)
+require(yaml)
+library(lubridate)
+release_dates = yaml.load_file('https://bioconductor.org/config.yaml')$release_dates
+releases = names(release_dates)
+df = tibble(date = mdy(release_dates), releases=releases)
+df = df[-c(1:8),]
+df$packages = sapply(df$releases,function(v) {
+  return(nrow(available.packages(repos = BiocInstaller::biocinstallRepos(version=as.character(v))['BioCsoft'])))
+})
+```
+
+```{r biocpkgplot, fig.align="center"}
+require(ggplot2)
+ggplot(df,aes(x=date,y=packages)) + 
+  geom_point() + 
+  geom_smooth(method="glm",
+             method.args=list(family=gaussian(link="log"))) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") + 
+  theme(text = element_text(size=16))
+```
+
+
+## Bioconductor Infrastructure
+
+<div id="wrap">
+<iframe id="frame" src="https://bioconductor.org/"></iframe>
+</div>
+
+## Reusing code
+
+
+```{r cars2, ref.label='cars', echo=FALSE}
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+
+
+## SummarizedExperiment
+
+<div style="width:80%; display: block; margin: 0 auto;">
+![](https://images.nature.com/full/nature-assets/nmeth/journal/v12/n2/images/nmeth.3252-F2.jpg)
+</div>
+
+[R]: https://cran.r-project.org/
