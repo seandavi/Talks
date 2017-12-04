@@ -127,26 +127,30 @@ ggplot(df,aes(x=date,y=packages)) +
 ```
 
 
-## Bioconductor Infrastructure
+## The Bioconductor Ecosystem
+
+```{r infrastructure}
+library(visNetwork)
+nodes = data.frame(label=c('Build System','Website','AnnotationHub','ExperimentHub','ExperimentData','AnnotationData','AnnotationHub','Support Site','Email List','Version Control','Packages', "Community", "Reproducibility", "Science", "IT"),
+                   group=c(rep("Component",11),rep("System",4)),
+                   size=(c(rep(20,11),40,40,40,40)),
+                   id=1:15)
+links = data.frame(from=c(1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10,10,10,11,11,11,11),
+                   to=  c(15,14,15,12,15,14,13,15,14,13,14,13,14,13,15,14,13,15,12,15,12,12,13,14,12,13,14,15),length=350)
+visNetwork(nodes,links) %>% 
+    visEdges(shadow = TRUE,
+             arrows =list(to = list(enabled = FALSE, scaleFactor = 2)),
+             selectionWidth = 10) %>%
+    visNodes(font = list(size=28,color='white'),
+             labelHighlightBold = TRUE) %>%
+    visOptions(highlightNearest = list(enabled =TRUE))
+```
+
+## Bioconductor: Education, Training, and Community
 
 <div id="wrap">
 <iframe id="frame" src="https://bioconductor.org/"></iframe>
 </div>
-
-## Reusing code
-
-
-```{r cars2, ref.label='cars', echo=FALSE}
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
 
 
 ## SummarizedExperiment
@@ -155,4 +159,73 @@ plot(pressure)
 ![](https://images.nature.com/full/nature-assets/nmeth/journal/v12/n2/images/nmeth.3252-F2.jpg)
 </div>
 
+
+## Example 1: Build a PCA plot from Public Data
+
+Use the [GEOquery] package to fetch data about [GSE103512].
+
+
+```{r geoquery10, echo=TRUE, cache=TRUE}
+library(GEOquery)
+gse = getGEO("GSE103512", destdir='/tmp')[[1]]
+gse
+```
+
+## Example 1: Build a PCA plot from Public Data
+
+Examine two variables of interest, cancer type and tumor/normal status.
+```{r geoquery20,echo=TRUE,cache=TRUE,results='asis'}
+library(xtable)
+print(xtable(with(pData(gse),table(`cancer type:ch1`,`normal:ch1`))),type='html')
+```
+
+## Example 1: Build a PCA plot from Public Data
+
+Information about features measured are also included.
+
+```{r geoquery30,echo=FALSE,cache=TRUE,results='asis'}
+library(DT)
+cnames = c('Gene Symbol','Gene Title','ENTREZ_GENE_ID')
+df = subset(fData(gse)[,cnames],!grepl('///',`Gene Symbol`))
+DT::datatable(df[1:1000,],extensions = 'Scroller',
+              options = list(scrollX = TRUE,  
+                             deferRender = TRUE,
+                             scrollY = 350,
+                             scroller = TRUE)) %>% 
+    formatStyle(columns = cnames,color='white',background = 'black',target = 'row')
+```
+
+## Example 1: Build a PCA plot from Public Data
+
+Filter gene expression by variance to find most informative genes.
+
+```{r sds,cache=TRUE,echo=TRUE}
+sds = apply(exprs(gse),1,sd)
+dat = exprs(gse)[order(sds,decreasing = TRUE)[1:500],]
+```
+
+Perform [multidimensional scaling] and prepare for plotting.
+
+```{r mds,echo=TRUE,cache=TRUE}
+mdsvals = cmdscale(dist(t(dat)))
+mdsvals = as.data.frame(mdsvals)
+mdsvals$Type=factor(pData(gse)[,'cancer type:ch1'])
+mdsvals$Normal = factor(pData(gse)[,'normal:ch1'])
+```
+
+And do the plot.
+
+```{r mdsplot,echo=TRUE,fig.align='center',fig.show='hide'}
+library(ggplot2)
+ggplot(mdsvals, aes(x=V1,y=V2,shape=Normal,color=Type)) + 
+    geom_point(size=4, alpha=0.6) + theme(text=element_text(size = 18))
+```
+
+## Example 1: Build a PCA plot from Public Data
+
+```{r ref.label='mdsplot',echo=FALSE,fig.align='center'}
+```
+
 [R]: https://cran.r-project.org/
+[GEOquery]: https://bioconductor.org/packages/GEOquery
+[GSE103512]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103512
