@@ -75,10 +75,10 @@ Additional functionality
 
 <br/>
 <br/>
-<br/>
-<br/>
 
 > These slides were written in R and all plots and results are generated from code in the slides--reproducible research in action!
+
+https://github.com/seandavi/Talks
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
@@ -154,7 +154,7 @@ nodes = data.frame(label=c('Build System','Website','AnnotationHub','ExperimentH
                    size=(c(rep(20,11),40,40,40,40)),
                    id=1:15)
 links = data.frame(from=c(1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10,10,10,11,11,11,11),
-                   to=  c(15,14,15,12,15,14,13,15,14,13,14,13,14,13,15,14,13,15,12,15,12,12,13,14,12,13,14,15),length=350)
+                   to=  c(15,14,15,12,15,14,13,15,14,13,14,13,14,13,15,14,13,15,12,15,12,12,13,14,12,13,14,15),length=500)
 visNetwork(nodes,links) %>% 
     visEdges(shadow = TRUE,
              arrows =list(to = list(enabled = FALSE, scaleFactor = 2)),
@@ -293,14 +293,14 @@ oncoplot(maf=melanoma,top=15,genes = getGeneSummary(melanoma)$Hugo_Symbol[3:20])
 
 ## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
 
-```{r oncodrive, cache=TRUE, fig.height=5, echo=TRUE, results='hide'}
+```{r oncodrive, cache=TRUE, fig.height=5, echo=TRUE, results='hide', fig.align='center'}
 v = oncodrive(maf = melanoma, AACol = 'HGVSp_Short', minMut = 5, pvalMethod = 'zscore')
 plotOncodrive(v,labelSize=40,fdrCutOff = 0.1)
 ```
 
 ## Example 2: Melanoma Variants from NCI Genomic Data Commons Data
 
-```{r lollipop, cache=TRUE}
+```{r lollipop, cache=TRUE, fig.align='center'}
 lollipopPlot(maf = melanoma, gene = 'BRAF', AACol = 'HGVSp_Short', 
              showMutationRate = TRUE, domainLabelSize = 3, defaultYaxis = FALSE)
 ```
