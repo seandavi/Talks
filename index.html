@@ -197,26 +197,47 @@ window.Quarto = {
 
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-title" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+         <option value="listing-author" data-direction="asc">
+          Author
+        </option>
+     </select>
+  </div>
+</div>
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-date-sort="1729137600000" data-listing-file-modified-sort="1730127478544" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="594">
-<a href="./2024-10-17-ai-agents-and-llms/index.html" class="quarto-grid-link">
+<div class="g-col-1" data-index="0" data-listing-date-sort="1730088000000" data-listing-file-modified-sort="1730134817428" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1614">
+<a href="./2024-10-28-ai-ml-oncology-service-line/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
-<img loading="lazy" src="./2024-10-17-ai-agents-and-llms/images/ai-agents-cover.webp" class="thumbnail-image card-img" style="height: 150px;">
+<img loading="lazy" src="./2024-10-28-ai-ml-oncology-service-line/cover.png" class="thumbnail-image card-img" style="height: 150px;">
 </p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-AI Agents
+AI in the Oncology Service Line
 </h5>
 <div class="card-text listing-description">
-Learn how large language models can be used as agents to solve complex tasks by interacting with external tools.
+
 </div>
 <div class="card-attribution card-text-small justify">
 <div class="listing-author">
 Sean Davis, MD, PhD
 </div>
 <div class="listing-date">
-Oct 17, 2024
+October 28, 2024
 </div>
 </div>
 </div>
@@ -241,128 +262,39 @@ AI in Medical Education
 Sean Davis, MD, PhD
 </div>
 <div class="listing-date">
-Oct 23, 2024
+October 23, 2024
 </div>
 </div>
 </div>
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1662523200000" data-listing-file-modified-sort="1728428629978" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="781">
-<a href="./2022-09-06-CU-SOM-AI-ML-intro/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Artificial Intelligence &amp; Machine Learning
-</h5>
-<div class="card-text listing-description">
-
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-<br>Sean Davis, MD, PhD
-</div>
-<div class="listing-date">
-Sep 7, 2022
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-listing-date-sort="1689048000000" data-listing-file-modified-sort="1689079173919" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="744">
-<a href="./2023-07-11-CSHLData-AI-ML-intro/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Artificial Intelligence &amp; Machine Learning
-</h5>
-<div class="card-text listing-description">
-
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-<br>Sean Davis, MD, PhD
-</div>
-<div class="listing-date">
-Jul 11, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-listing-date-sort="1698984000000" data-listing-file-modified-sort="1699033940116" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="751">
-<a href="./2023-11-03-Monroe-AI-ML/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Artificial Intelligence &amp; Machine Learning
-</h5>
-<div class="card-text listing-description">
-
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-<br>Sean Davis, MD, PhD
-</div>
-<div class="listing-date">
-Nov 3, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="5" data-listing-date-sort="1724990400000" data-listing-file-modified-sort="1725033224850" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="123">
-<a href="./2023-11-27-CUNY-json-data/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Data products and partnerships
-</h5>
-<div class="card-text listing-description">
-
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Sean Davis, MD, PhD
-</div>
-<div class="listing-date">
-Aug 30, 2024
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1730127478736" data-listing-reading-time-sort="20" data-listing-word-count-sort="3938">
-<a href="./ml-intro/index.html" class="quarto-grid-link">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1729137600000" data-listing-file-modified-sort="1730127478544" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="594">
+<a href="./2024-10-17-ai-agents-and-llms/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
-<img loading="lazy" src="./ml-intro/images/ml-intro-cover.png" class="thumbnail-image card-img" style="height: 150px;">
+<img loading="lazy" src="./2024-10-17-ai-agents-and-llms/images/ai-agents-cover.webp" class="thumbnail-image card-img" style="height: 150px;">
 </p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Introduction to Machine Learning
+AI Agents
 </h5>
 <div class="card-text listing-description">
-
+Learn how large language models can be used as agents to solve complex tasks by interacting with external tools.
 </div>
-<div class="card-attribution card-text-small start">
+<div class="card-attribution card-text-small justify">
 <div class="listing-author">
 Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+October 17, 2024
 </div>
 </div>
 </div>
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="7" data-categories="teaching" data-listing-date-sort="1729137600000" data-listing-file-modified-sort="1730127478777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
+<div class="g-col-1" data-index="3" data-categories="teaching" data-listing-date-sort="1729137600000" data-listing-file-modified-sort="1730127478777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="551">
 <a href="./2024-10-17-prompt-engineering/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -380,37 +312,39 @@ Learn design principles for effective prompts for language models to improve acc
 Sean Davis, MD, PhD
 </div>
 <div class="listing-date">
-Oct 17, 2024
+October 17, 2024
 </div>
 </div>
 </div>
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="8" data-listing-date-sort="1678338000000" data-listing-file-modified-sort="1684198535863" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="513">
-<a href="./2023-03-08-univ-colorado-bmsc-7812-r-intro/index.html" class="quarto-grid-link">
+<div class="g-col-1" data-index="4" data-listing-date-sort="1726804800000" data-listing-file-modified-sort="1730132088660" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3938">
+<a href="./2024-09-20-ml-intro/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img loading="lazy" src="./2024-09-20-ml-intro/images/ml-intro-cover.png" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Reproducible, reusable, and shareable concepts in computational research
+Introduction to Machine Learning
 </h5>
 <div class="card-text listing-description">
 
 </div>
 <div class="card-attribution card-text-small justify">
 <div class="listing-author">
-<br>Sean Davis, MD, PhD
+Sean Davis, MD, PhD
 </div>
 <div class="listing-date">
-Mar 9, 2023
+September 20, 2024
 </div>
 </div>
 </div>
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="9" data-listing-date-sort="1726718400000" data-listing-file-modified-sort="1730127478551" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1563">
+<div class="g-col-1" data-index="5" data-listing-date-sort="1726718400000" data-listing-file-modified-sort="1730127478551" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1563">
 <a href="./2024-09-19-ai-history/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -428,7 +362,122 @@ The History of Artificial Intelligence and Machine Learning
 Sean Davis, MD, PhD
 </div>
 <div class="listing-date">
-Sep 19, 2024
+September 19, 2024
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="6" data-listing-date-sort="1724990400000" data-listing-file-modified-sort="1725033224850" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="123">
+<a href="./2023-11-27-CUNY-json-data/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Data products and partnerships
+</h5>
+<div class="card-text listing-description">
+
+</div>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+August 30, 2024
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="7" data-listing-date-sort="1698984000000" data-listing-file-modified-sort="1699033940116" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="751">
+<a href="./2023-11-03-Monroe-AI-ML/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Artificial Intelligence &amp; Machine Learning
+</h5>
+<div class="card-text listing-description">
+
+</div>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+<br>Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+November 3, 2023
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="8" data-listing-date-sort="1689048000000" data-listing-file-modified-sort="1689079173919" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="744">
+<a href="./2023-07-11-CSHLData-AI-ML-intro/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Artificial Intelligence &amp; Machine Learning
+</h5>
+<div class="card-text listing-description">
+
+</div>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+<br>Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+July 11, 2023
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="9" data-listing-date-sort="1678338000000" data-listing-file-modified-sort="1684198535863" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="513">
+<a href="./2023-03-08-univ-colorado-bmsc-7812-r-intro/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Reproducible, reusable, and shareable concepts in computational research
+</h5>
+<div class="card-text listing-description">
+
+</div>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+<br>Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+March 9, 2023
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="10" data-listing-date-sort="1662523200000" data-listing-file-modified-sort="1728428629978" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="781">
+<a href="./2022-09-06-CU-SOM-AI-ML-intro/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Artificial Intelligence &amp; Machine Learning
+</h5>
+<div class="card-text listing-description">
+
+</div>
+<div class="card-attribution card-text-small justify">
+<div class="listing-author">
+<br>Sean Davis, MD, PhD
+</div>
+<div class="listing-date">
+September 7, 2022
 </div>
 </div>
 </div>
@@ -532,7 +581,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/seandavi\.github\.io\/talks\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
