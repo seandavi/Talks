@@ -529,7 +529,7 @@
     "href": "2023-11-27-CUNY-json-data/talk.html#working-with-json-in-r",
     "title": "Javascript Object Notation (JSON)",
     "section": "Working with JSON in R",
-    "text": "Working with JSON in R\nThe next steps in working with JSON from the web involve using a different client than a web browser. In this case, we will use R as our client.\nR has a number of packages that can be used to work with JSON, but we will focus on the jsonlite package.\nFirst, we need to install the package.\n\ninstall.packages(\"jsonlite\")\n\nThe jsonlite package provides a number of functions for working with JSON, but we will focus on the fromJSON() function, which converts JSON to an R object.\n\nlibrary(jsonlite)\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=3\"\nr_result &lt;- jsonlite::fromJSON(URL)\nclass(r_result)\n\n[1] \"list\"\n\n\nThe fromJSON() function returns a list, which is a common data structure in R. Let’s look at the structure of the list in R.\n\nstr(r_result)\n\nList of 6\n $ version       : chr \"6.9\"\n $ hitCount      : int 14699\n $ nextCursorMark: chr \"AoIIQI3zeCg1MTYwNDE3NA==\"\n $ nextPageUrl   : chr \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"&curs\"| __truncated__\n $ request       :List of 6\n  ..$ queryString: chr \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n  ..$ resultType : chr \"lite\"\n  ..$ cursorMark : chr \"*\"\n  ..$ pageSize   : int 3\n  ..$ sort       : chr \"\"\n  ..$ synonym    : logi FALSE\n $ resultList    :List of 1\n  ..$ result:'data.frame':  3 obs. of  29 variables:\n  .. ..$ id                   : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ source               : chr [1:3] \"MED\" \"MED\" \"MED\"\n  .. ..$ pmid                 : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ doi                  : chr [1:3] \"10.3390/vaccines12101193\" \"10.1002/rcr2.70008\" \"10.1186/s12889-024-20133-4\"\n  .. ..$ title                : chr [1:3] \"Myocarditis Associated with COVID-19 Vaccination.\" \"Relapsing polychondritis after COVID-19 vaccination.\" \"Religious belongings and Covid-19 vaccination.\"\n  .. ..$ authorString         : chr [1:3] \"Florek K, Sokolski M.\" \"Ito K, Ogawa T, Igarashi S, Miyai K, Sato K, Kawana A, Kimizuka Y.\" \"Chakhunashvili K, Kvirkvelia E, Chakhunashvili DG.\"\n  .. ..$ journalTitle         : chr [1:3] \"Vaccines (Basel)\" \"Respirol Case Rep\" \"BMC Public Health\"\n  .. ..$ issue                : chr [1:3] \"10\" \"9\" \"1\"\n  .. ..$ journalVolume        : chr [1:3] \"12\" \"12\" \"24\"\n  .. ..$ pubYear              : chr [1:3] \"2024\" \"2024\" \"2024\"\n  .. ..$ journalIssn          : chr [1:3] \"2076-393x\" \"2051-3380\" \"1471-2458\"\n  .. ..$ pageInfo             : chr [1:3] \"1193\" \"e70008\" \"2585\"\n  .. ..$ pubType              : chr [1:3] \"review; journal article\" \"journal article; case reports; case-report\" \"research-article; journal article\"\n  .. ..$ isOpenAccess         : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ inEPMC               : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ inPMC                : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ hasPDF               : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ hasBook              : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasSuppl             : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ citedByCount         : int [1:3] 0 0 0\n  .. ..$ hasReferences        : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ hasTextMinedTerms    : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasDbCrossReferences : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasLabsLinks         : chr [1:3] \"N\" \"Y\" \"N\"\n  .. ..$ hasTMAccessionNumbers: chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ firstIndexDate       : chr [1:3] \"2024-10-27\" \"2024-09-03\" \"2024-09-29\"\n  .. ..$ firstPublicationDate : chr [1:3] \"2024-10-19\" \"2024-08-30\" \"2024-09-27\"\n  .. ..$ pmcid                : chr [1:3] NA \"PMC11362975\" \"PMC11428539\"\n  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:\n  .. .. ..$ fullTextId:List of 3\n  .. .. .. ..$ : NULL\n  .. .. .. ..$ : chr \"PMC11362975\"\n  .. .. .. ..$ : chr \"PMC11428539\"\n\n\n\nCompare the structure of the list in R to the structure of the JSON in the browser.\nCompare the number of results in the JSON to the number of results in the R list.\nCompare the number of results in the R list to the number of results in the browser.\n\nWe can access individual elements of the list using the $ operator.\n\nr_result$hitCount\n\n[1] 14699\n\n\nAnd we can do the same for “nested” elements of the list.\n\nr_result$request$queryString\n\n[1] \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n\n\nNote that the “important” information comes into R as a data.frame, but it is “nested” inside the list. Let’s pull it out of the list and assign it to a variable.\n\ntop3_articles &lt;- r_result$resultList$result\n\nLet’s not stop with the top 3 articles and instead get the top 1000 articles. To do so, we simply change our URL to request 1000 results.\n\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=1000\"\nr_result &lt;- jsonlite::fromJSON(URL)\ntop1000_articles &lt;- r_result$resultList$result\n\nAnd now we can plot the number of articles by year.\n\nlibrary(ggplot2)\nggplot(top1000_articles, aes(x = pubYear)) +\n  geom_bar()"
+    "text": "Working with JSON in R\nThe next steps in working with JSON from the web involve using a different client than a web browser. In this case, we will use R as our client.\nR has a number of packages that can be used to work with JSON, but we will focus on the jsonlite package.\nFirst, we need to install the package.\n\ninstall.packages(\"jsonlite\")\n\nThe jsonlite package provides a number of functions for working with JSON, but we will focus on the fromJSON() function, which converts JSON to an R object.\n\nlibrary(jsonlite)\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=3\"\nr_result &lt;- jsonlite::fromJSON(URL)\nclass(r_result)\n\n[1] \"list\"\n\n\nThe fromJSON() function returns a list, which is a common data structure in R. Let’s look at the structure of the list in R.\n\nstr(r_result)\n\nList of 6\n $ version       : chr \"6.9\"\n $ hitCount      : int 14709\n $ nextCursorMark: chr \"AoIIQIz/ASg1MTYwNDE3NA==\"\n $ nextPageUrl   : chr \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"&curs\"| __truncated__\n $ request       :List of 6\n  ..$ queryString: chr \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n  ..$ resultType : chr \"lite\"\n  ..$ cursorMark : chr \"*\"\n  ..$ pageSize   : int 3\n  ..$ sort       : chr \"\"\n  ..$ synonym    : logi FALSE\n $ resultList    :List of 1\n  ..$ result:'data.frame':  3 obs. of  29 variables:\n  .. ..$ id                   : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ source               : chr [1:3] \"MED\" \"MED\" \"MED\"\n  .. ..$ pmid                 : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ doi                  : chr [1:3] \"10.3390/vaccines12101193\" \"10.1002/rcr2.70008\" \"10.1186/s12889-024-20133-4\"\n  .. ..$ title                : chr [1:3] \"Myocarditis Associated with COVID-19 Vaccination.\" \"Relapsing polychondritis after COVID-19 vaccination.\" \"Religious belongings and Covid-19 vaccination.\"\n  .. ..$ authorString         : chr [1:3] \"Florek K, Sokolski M.\" \"Ito K, Ogawa T, Igarashi S, Miyai K, Sato K, Kawana A, Kimizuka Y.\" \"Chakhunashvili K, Kvirkvelia E, Chakhunashvili DG.\"\n  .. ..$ journalTitle         : chr [1:3] \"Vaccines (Basel)\" \"Respirol Case Rep\" \"BMC Public Health\"\n  .. ..$ issue                : chr [1:3] \"10\" \"9\" \"1\"\n  .. ..$ journalVolume        : chr [1:3] \"12\" \"12\" \"24\"\n  .. ..$ pubYear              : chr [1:3] \"2024\" \"2024\" \"2024\"\n  .. ..$ journalIssn          : chr [1:3] \"2076-393x\" \"2051-3380\" \"1471-2458\"\n  .. ..$ pageInfo             : chr [1:3] \"1193\" \"e70008\" \"2585\"\n  .. ..$ pubType              : chr [1:3] \"review; journal article\" \"journal article; case reports; case-report\" \"research-article; journal article\"\n  .. ..$ isOpenAccess         : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ inEPMC               : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ inPMC                : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ hasPDF               : chr [1:3] \"N\" \"Y\" \"Y\"\n  .. ..$ hasBook              : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasSuppl             : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ citedByCount         : int [1:3] 0 0 0\n  .. ..$ hasReferences        : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasTextMinedTerms    : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasDbCrossReferences : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasLabsLinks         : chr [1:3] \"N\" \"Y\" \"N\"\n  .. ..$ hasTMAccessionNumbers: chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ firstIndexDate       : chr [1:3] \"2024-10-27\" \"2024-09-03\" \"2024-09-29\"\n  .. ..$ firstPublicationDate : chr [1:3] \"2024-10-19\" \"2024-08-30\" \"2024-09-27\"\n  .. ..$ pmcid                : chr [1:3] NA \"PMC11362975\" \"PMC11428539\"\n  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:\n  .. .. ..$ fullTextId:List of 3\n  .. .. .. ..$ : NULL\n  .. .. .. ..$ : chr \"PMC11362975\"\n  .. .. .. ..$ : chr \"PMC11428539\"\n\n\n\nCompare the structure of the list in R to the structure of the JSON in the browser.\nCompare the number of results in the JSON to the number of results in the R list.\nCompare the number of results in the R list to the number of results in the browser.\n\nWe can access individual elements of the list using the $ operator.\n\nr_result$hitCount\n\n[1] 14709\n\n\nAnd we can do the same for “nested” elements of the list.\n\nr_result$request$queryString\n\n[1] \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n\n\nNote that the “important” information comes into R as a data.frame, but it is “nested” inside the list. Let’s pull it out of the list and assign it to a variable.\n\ntop3_articles &lt;- r_result$resultList$result\n\nLet’s not stop with the top 3 articles and instead get the top 1000 articles. To do so, we simply change our URL to request 1000 results.\n\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=1000\"\nr_result &lt;- jsonlite::fromJSON(URL)\ntop1000_articles &lt;- r_result$resultList$result\n\nAnd now we can plot the number of articles by year.\n\nlibrary(ggplot2)\nggplot(top1000_articles, aes(x = pubYear)) +\n  geom_bar()"
   },
   {
     "objectID": "2023-11-27-CUNY-json-data/talk.html#dont-stop-there",
@@ -553,18 +553,606 @@
     "text": "References\n\nhttps://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
+    "objectID": "2024-09-20-ml-intro/index.html#outline",
+    "href": "2024-09-20-ml-intro/index.html#outline",
+    "title": "Introduction to Machine Learning",
+    "section": "Outline",
+    "text": "Outline\n\nRelationship between AI and ML\nTypes of Machine Learning\nA little about data\nSupervised Learning\nUnsupervised Learning"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Talks and Presentations",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nAI in the Oncology Service Line\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in Medical Education\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 23, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI Agents\n\n\nLearn how large language models can be used as agents to solve complex tasks by interacting with external tools.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPrompt Engineering\n\n\nLearn design principles for effective prompts for language models to improve accuracy, usability, and relevance of model outputs.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 20, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 19, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nData products and partnerships\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nAugust 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nNovember 3, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nJuly 11, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nReproducible, reusable, and shareable concepts in computational research\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nMarch 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 7, 2022\n\n\n\n\n\n\n\n\nNo matching items"
+    "objectID": "2024-09-20-ml-intro/index.html#an-ontology-of-ai",
+    "href": "2024-09-20-ml-intro/index.html#an-ontology-of-ai",
+    "title": "Introduction to Machine Learning",
+    "section": "An Ontology of AI",
+    "text": "An Ontology of AI"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#what-is-machine-learning",
+    "href": "2024-09-20-ml-intro/index.html#what-is-machine-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "What is Machine Learning?",
+    "text": "What is Machine Learning?\nThe study of computer algorithms that improve automatically through experience. It is seen as a subset of artificial intelligence. Machine learning systems give the computer the ability to learn without being explicitly programmed rules."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#what-is-deep-learning",
+    "href": "2024-09-20-ml-intro/index.html#what-is-deep-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "What is Deep Learning?",
+    "text": "What is Deep Learning?\nMachine learning algorithms that are inspired by the structure and function of the brain. Deep learning is a subset of machine learning in artificial intelligence that has networks capable of learning unsupervised from data that is often unstructured (i.e., text or images)."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning",
+    "href": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "AI vs. ML vs. Deep Learning",
+    "text": "AI vs. ML vs. Deep Learning\n\n\nArtificialIntelligence\n\n\nMachineLearning\n\n\nDeepLearning"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning-1",
+    "href": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning-1",
+    "title": "Introduction to Machine Learning",
+    "section": "AI vs. ML vs. Deep Learning",
+    "text": "AI vs. ML vs. Deep Learning\n\n\nArtificialIntelligence\n\n\nMachineLearning\n\n\nDeepLearning"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#an-ontology-of-data",
+    "href": "2024-09-20-ml-intro/index.html#an-ontology-of-data",
+    "title": "Introduction to Machine Learning",
+    "section": "An ontology of Data",
+    "text": "An ontology of Data\n\n\n\n\nOne way to think about different classes of data."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#structured-data-vs-unstructured-data",
+    "href": "2024-09-20-ml-intro/index.html#structured-data-vs-unstructured-data",
+    "title": "Introduction to Machine Learning",
+    "section": "Structured Data vs Unstructured Data",
+    "text": "Structured Data vs Unstructured Data\n\n\n\n\n\n\n\n\n\nStructured data\nUnstructured data\n\n\n\n\nWhat is it?\nData that fits in a predefined data model or schema.\nData without an underlying model to discern attributes.\n\n\nBasic example\nAn Excel table.\nA collection of video files.\n\n\nBest for\nA set of predefined observations or characteristics (columns) on a collection of things (rows)\nAn associated collection of data, objects, or files where the attributes change or are unknown.\n\n\nCommon formats\nCSV, TSV, Excel, SQL databases.\nImages, audio, video, text."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#tabular-data",
+    "href": "2024-09-20-ml-intro/index.html#tabular-data",
+    "title": "Introduction to Machine Learning",
+    "section": "Tabular Data",
+    "text": "Tabular Data\n\nRows and columns\nEach column has a specific data type\nEach row represents an observation on a subject (e.g., patient, sample)\n\nTerminology:\n\nFeature: A column in the dataset\nTarget: The variable you are trying to predict\nObservation: A row in the dataset\nDimension: The number of features in the dataset (sometimes represented by \\(p\\))\nSample: A single row in the dataset (usually represented by \\(n\\))"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classes-of-machine-learning",
+    "href": "2024-09-20-ml-intro/index.html#classes-of-machine-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Classes of Machine Learning",
+    "text": "Classes of Machine Learning\n\nBroad classes of machine learning."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#types-of-machine-learning",
+    "href": "2024-09-20-ml-intro/index.html#types-of-machine-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Types of Machine Learning",
+    "text": "Types of Machine Learning\n\nSupervised Learning\n\nClassification\nRegression\n\nUnsupervised Learning\n\nClustering\nDimensionality Reduction\n\nReinforcement Learning"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#reinforecement-learning",
+    "href": "2024-09-20-ml-intro/index.html#reinforecement-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Reinforecement Learning",
+    "text": "Reinforecement Learning\n\nLearning through interaction: Unlike supervised learning where you have labeled data, RL agents learn by interacting with an environment.\nDelayed rewards: The agent doesn’t receive immediate feedback about the optimal action, but rather must learn which actions lead to better cumulative rewards over time.\nExploration vs. exploitation: The agent must balance exploring new actions versus exploiting known good actions.\nSequential decision making: RL deals with sequences of decisions rather than one-time predictions.\n\n\nExamples\n\n\n\nGame playing (e.g., AlphaGo, OpenAI Five)\nRobotics control\n\n\n\nAutonomous driving\nTrading strategies"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#a-map-of-machine-learning-approaches",
+    "href": "2024-09-20-ml-intro/index.html#a-map-of-machine-learning-approaches",
+    "title": "Introduction to Machine Learning",
+    "section": "A map of machine learning approaches",
+    "text": "A map of machine learning approaches\n\n\nhttps://scikit-learn.org/stable/tutorial/machine_learning_map/index.html"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#supervised-learning-1",
+    "href": "2024-09-20-ml-intro/index.html#supervised-learning-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Supervised Learning",
+    "text": "Supervised Learning\n\nGiven a dataset of input-output pairs: \\(\\{(x_1, y_1), (x_2, y_2), \\ldots, (x_n, y_n)\\}\\)\nLearn a function \\(f\\) with parameters \\(\\theta\\) that maps inputs \\(x\\) to outputs \\(y\\) \\[y = f(x; \\theta) + \\epsilon\\]\nObjective: Choose parameters \\(\\theta\\) to minimize the prediction error \\(\\epsilon\\)"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#supervised-learning-2",
+    "href": "2024-09-20-ml-intro/index.html#supervised-learning-2",
+    "title": "Introduction to Machine Learning",
+    "section": "Supervised Learning",
+    "text": "Supervised Learning\nWhen \\(y\\) is a continuous variable (e.g., house prices), it’s a regression problem.\nWhen \\(y\\) is a discrete variable (e.g., spam or not spam), it’s a classification problem.\n\nIt is not a concidence that the same terms are used in statistics! Many machine learning algorithms are based on statistical principles or are generalizations of statistical methods."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification",
+    "href": "2024-09-20-ml-intro/index.html#classification",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification",
+    "text": "Classification"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#regression",
+    "href": "2024-09-20-ml-intro/index.html#regression",
+    "title": "Introduction to Machine Learning",
+    "section": "Regression",
+    "text": "Regression\n\nNot all regression is linear…."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example",
+    "href": "2024-09-20-ml-intro/index.html#classification-example",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example\n\nThe classic iris"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example-1",
+    "href": "2024-09-20-ml-intro/index.html#classification-example-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example\n\n\n\n\n\nSepal.Length\nSepal.Width\nPetal.Length\nPetal.Width\nSpecies\n\n\n\n\n6.2\n2.8\n4.8\n1.8\nvirginica\n\n\n4.8\n3.4\n1.6\n0.2\nsetosa\n\n\n5.0\n3.4\n1.5\n0.2\nsetosa\n\n\n5.9\n3.2\n4.8\n1.8\nversicolor\n\n\n5.8\n4.0\n1.2\n0.2\nsetosa\n\n\n5.8\n2.7\n3.9\n1.2\nversicolor\n\n\n6.7\n3.1\n4.7\n1.5\nversicolor\n\n\n5.6\n2.8\n4.9\n2.0\nvirginica\n\n\n6.3\n2.8\n5.1\n1.5\nvirginica\n\n\n6.3\n2.5\n5.0\n1.9\nvirginica\n\n\n4.6\n3.1\n1.5\n0.2\nsetosa\n\n\n5.5\n2.4\n3.8\n1.1\nversicolor\n\n\n6.5\n3.0\n5.2\n2.0\nvirginica\n\n\n5.6\n3.0\n4.5\n1.5\nversicolor\n\n\n7.3\n2.9\n6.3\n1.8\nvirginica\n\n\n6.1\n3.0\n4.9\n1.8\nvirginica\n\n\n4.3\n3.0\n1.1\n0.1\nsetosa\n\n\n6.4\n3.2\n5.3\n2.3\nvirginica\n\n\n4.8\n3.0\n1.4\n0.3\nsetosa\n\n\n6.1\n2.9\n4.7\n1.4\nversicolor"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example-2",
+    "href": "2024-09-20-ml-intro/index.html#classification-example-2",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#training-and-testing",
+    "href": "2024-09-20-ml-intro/index.html#training-and-testing",
+    "title": "Introduction to Machine Learning",
+    "section": "Training and Testing",
+    "text": "Training and Testing\n\n\nTraining Data: Used to teach the model. It consists of input-output pairs for a supervised learning task.\nTesting Data: Used to evaluate the model’s performance. It should be separate from the training data, but come from the same distribution or population.\nValidation Data: Used for tuning hyperparameters. Hyperparameters are settings that control the learning process (e.g., k in k-NN, learning rate in neural networks)."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#generalizability",
+    "href": "2024-09-20-ml-intro/index.html#generalizability",
+    "title": "Introduction to Machine Learning",
+    "section": "Generalizability",
+    "text": "Generalizability\n\nThe ability of a model to perform well on unseen data\n\nThis table shows the relationship between training error, testing error, and overfitting, good fit, and underfitting.\n\n\n\nTraining Error\nTesting Error\nModel Fit\n\n\n\n\nLow\nHigh\nOverfit\n\n\nLow\nLow\nGood Fit\n\n\nHigh\nHigh\nUnderfit (poor performance)"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#bias-and-variance",
+    "href": "2024-09-20-ml-intro/index.html#bias-and-variance",
+    "title": "Introduction to Machine Learning",
+    "section": "Bias and Variance",
+    "text": "Bias and Variance\n\nBias: Error from incorrect assumptions in the learning algorithm\nVariance: Error from sensitivity to small fluctuations in the training set\nBias-Variance Tradeoff: The conflict in trying to simultaneously minimize these two sources of error"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example-3",
+    "href": "2024-09-20-ml-intro/index.html#classification-example-3",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example-4",
+    "href": "2024-09-20-ml-intro/index.html#classification-example-4",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classification-example-5",
+    "href": "2024-09-20-ml-intro/index.html#classification-example-5",
+    "title": "Introduction to Machine Learning",
+    "section": "Classification Example",
+    "text": "Classification Example"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#regression-example",
+    "href": "2024-09-20-ml-intro/index.html#regression-example",
+    "title": "Introduction to Machine Learning",
+    "section": "Regression Example",
+    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-49.071 -11.047  -0.692  12.970  41.897 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -0.72808    3.68575  -0.198    0.844    \nx            2.05022    0.06336  32.356   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 18.29 on 98 degrees of freedom\nMultiple R-squared:  0.9144,    Adjusted R-squared:  0.9135 \nF-statistic:  1047 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#regression-example-1",
+    "href": "2024-09-20-ml-intro/index.html#regression-example-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Regression Example",
+    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-98.143 -22.095  -1.385  25.940  83.795 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  -1.4562     7.3715  -0.198    0.844    \nx             2.1004     0.1267  16.574   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 36.58 on 98 degrees of freedom\nMultiple R-squared:  0.7371,    Adjusted R-squared:  0.7344 \nF-statistic: 274.7 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#regression-example-2",
+    "href": "2024-09-20-ml-intro/index.html#regression-example-2",
+    "title": "Introduction to Machine Learning",
+    "section": "Regression Example",
+    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-171.749  -38.665   -2.423   45.395  146.641 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  -2.5483    12.9001  -0.198    0.844    \nx             2.1758     0.2218   9.811 3.12e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 64.02 on 98 degrees of freedom\nMultiple R-squared:  0.4955,    Adjusted R-squared:  0.4904 \nF-statistic: 96.25 on 1 and 98 DF,  p-value: 3.116e-16"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example",
+    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example",
+    "title": "Introduction to Machine Learning",
+    "section": "More Complex Regression Example",
+    "text": "More Complex Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nage\nsex\nbmi\nchildren\nsmoker\nregion\ncharges\nobese\n\n\n\n\n19\nfemale\n27.900\n0\nyes\nsouthwest\n16884.924\nnot obese\n\n\n18\nmale\n33.770\n1\nno\nsoutheast\n1725.552\nobese\n\n\n28\nmale\n33.000\n3\nno\nsoutheast\n4449.462\nobese\n\n\n33\nmale\n22.705\n0\nno\nnorthwest\n21984.471\nnot obese\n\n\n32\nmale\n28.880\n0\nno\nnorthwest\n3866.855\nnot obese\n\n\n31\nfemale\n25.740\n0\nno\nsoutheast\n3756.622\nnot obese\n\n\n46\nfemale\n33.440\n1\nno\nsoutheast\n8240.590\nobese\n\n\n37\nfemale\n27.740\n3\nno\nnorthwest\n7281.506\nnot obese\n\n\n37\nmale\n29.830\n2\nno\nnortheast\n6406.411\nnot obese\n\n\n60\nfemale\n25.840\n0\nno\nnorthwest\n28923.137\nnot obese"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-1",
+    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-1",
+    "title": "Introduction to Machine Learning",
+    "section": "More Complex Regression Example",
+    "text": "More Complex Regression Example\n\nWhat do you think about the relationship between age and insurance charges?"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-2",
+    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-2",
+    "title": "Introduction to Machine Learning",
+    "section": "More Complex Regression Example",
+    "text": "More Complex Regression Example"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-3",
+    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-3",
+    "title": "Introduction to Machine Learning",
+    "section": "More Complex Regression Example",
+    "text": "More Complex Regression Example\n\n\n\nCall:\nlm(formula = charges ~ age + smoker + sex + obese, data = insurance)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-13821.5  -3647.0   -225.8   1491.3  26884.1 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -4051.16     542.42  -7.469 1.46e-13 ***\nage           261.73      11.82  22.149  &lt; 2e-16 ***\nsmokeryes   23861.89     410.79  58.087  &lt; 2e-16 ***\nsexmale      -114.30     331.89  -0.344    0.731    \nobeseobese   4234.44     332.58  12.732  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 6044 on 1333 degrees of freedom\nMultiple R-squared:  0.7516,    Adjusted R-squared:  0.7509 \nF-statistic:  1008 on 4 and 1333 DF,  p-value: &lt; 2.2e-16"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-24.5356  -5.5236  -0.3462   6.4850  20.9487 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -0.36404    1.84287  -0.198    0.844    \nx            2.02511    0.03168  63.920   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 9.145 on 98 degrees of freedom\nMultiple R-squared:  0.9766,    Adjusted R-squared:  0.9763 \nF-statistic:  4086 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-1",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\nAnscombe’s Quartet\nhttps://en.wikipedia.org/wiki/Anscombe%27s_quartet"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-2",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-2",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\nK-nearest neighbor (kNN) algorithm."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-3",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-3",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\nClassification and Regression Trees (CART)."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-4",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-4",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\nRandom Forests."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-5",
+    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-5",
+    "title": "Introduction to Machine Learning",
+    "section": "Algorithms for Supervised Learning",
+    "text": "Algorithms for Supervised Learning\n\nDeep learning."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#applying-supervised-learning-algorithms",
+    "href": "2024-09-20-ml-intro/index.html#applying-supervised-learning-algorithms",
+    "title": "Introduction to Machine Learning",
+    "section": "Applying Supervised Learning Algorithms",
+    "text": "Applying Supervised Learning Algorithms\n\nThe mlr3 ecosystem in R."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#key-concepts-in-supervised-learning",
+    "href": "2024-09-20-ml-intro/index.html#key-concepts-in-supervised-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Key Concepts in Supervised Learning",
+    "text": "Key Concepts in Supervised Learning\n\nFeature Engineering\nModel Selection\nHyperparameter Tuning\nEnsemble Methods\nCross-Validation\nEvaluation Metrics\n\n\nBriefly explain each concept: 1. Feature Engineering: Creating new features or transforming existing ones to improve model performance 2. Model Selection: Choosing the appropriate algorithm for your problem 3. Hyperparameter Tuning: Optimizing model parameters that are not learned from data 4. Ensemble Methods: Combining multiple models to improve performance 5. Cross-Validation: Technique for assessing how the model will generalize to an independent dataset 6. Evaluation Metrics: Different ways to measure model performance (accuracy, precision, recall, F1-score, ROC curve, etc.)"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#challenges-in-machine-learning",
+    "href": "2024-09-20-ml-intro/index.html#challenges-in-machine-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Challenges in Machine Learning",
+    "text": "Challenges in Machine Learning\n\nData Quality and Quantity\nInterpretability vs Performance\nEthical Considerations and Bias\nComputational Resources\nModel Deployment and Maintenance\n\n\nDiscuss each challenge: 1. The importance of good, representative data and the challenges of data collection and cleaning 2. The tradeoff between complex, high-performing models and simpler, more interpretable ones 3. The risk of perpetuating or amplifying societal biases through ML models 4. The need for significant computational power, especially for deep learning models 5. The challenges of deploying models in production environments and keeping them updated"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#clustering",
+    "href": "2024-09-20-ml-intro/index.html#clustering",
+    "title": "Introduction to Machine Learning",
+    "section": "Clustering",
+    "text": "Clustering\n\nGene expression measurements."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#classes-of-unsupervised-learning-algorithms",
+    "href": "2024-09-20-ml-intro/index.html#classes-of-unsupervised-learning-algorithms",
+    "title": "Introduction to Machine Learning",
+    "section": "Classes of unsupervised learning algorithms",
+    "text": "Classes of unsupervised learning algorithms\n\n\n\n\n\nClustering.\n\n\n\n\n\n\nDimensionality reduction."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#clustering-1",
+    "href": "2024-09-20-ml-intro/index.html#clustering-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Clustering",
+    "text": "Clustering\n\nThinking about similarities and differences"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#clustering-2",
+    "href": "2024-09-20-ml-intro/index.html#clustering-2",
+    "title": "Introduction to Machine Learning",
+    "section": "Clustering",
+    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#clustering-3",
+    "href": "2024-09-20-ml-intro/index.html#clustering-3",
+    "title": "Introduction to Machine Learning",
+    "section": "Clustering",
+    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#clustering-4",
+    "href": "2024-09-20-ml-intro/index.html#clustering-4",
+    "title": "Introduction to Machine Learning",
+    "section": "Clustering",
+    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#dimensionality-reduction",
+    "href": "2024-09-20-ml-intro/index.html#dimensionality-reduction",
+    "title": "Introduction to Machine Learning",
+    "section": "Dimensionality Reduction",
+    "text": "Dimensionality Reduction\n\nSchematic PCA."
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#dimensionality-reduction-1",
+    "href": "2024-09-20-ml-intro/index.html#dimensionality-reduction-1",
+    "title": "Introduction to Machine Learning",
+    "section": "Dimensionality Reduction",
+    "text": "Dimensionality Reduction\n\nUsing dimensionality reduction to explore 22,000 dimensions of gene expression data on 280 samples.\nhttps://seandavi.github.io/ITR/geoquery_mds.html"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#future-directions-in-machine-learning",
+    "href": "2024-09-20-ml-intro/index.html#future-directions-in-machine-learning",
+    "title": "Introduction to Machine Learning",
+    "section": "Future Directions in Machine Learning",
+    "text": "Future Directions in Machine Learning\n\nAutoML: Automating the ML pipeline\nFederated Learning: Training models on decentralized data\nExplainable AI: Making black-box models more interpretable\nQuantum Machine Learning: Leveraging quantum computing for ML\nContinual Learning: Adapting to new data without forgetting old patterns"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#conclusion",
+    "href": "2024-09-20-ml-intro/index.html#conclusion",
+    "title": "Introduction to Machine Learning",
+    "section": "Conclusion",
+    "text": "Conclusion\n\nSupervised learning: Predicting outcomes based on labeled data\n\nClassification: Assigning labels to data\nRegression: Predicting continuous values\n\nUnsupervised learning: Finding patterns in unlabeled data\n\nClustering: Grouping similar data points\nDimensionality reduction: Simplifying complex data by reducing dimensions\n\nReinforcement learning: Learning through interaction with an environment"
+  },
+  {
+    "objectID": "2024-09-20-ml-intro/index.html#resources",
+    "href": "2024-09-20-ml-intro/index.html#resources",
+    "title": "Introduction to Machine Learning",
+    "section": "Resources",
+    "text": "Resources\n\nRecent reviews\n\nMachine Learning in Genomic Medicine: A Review of Computational Problems and Data Sets\nOpportunities And Obstacles For Deep Learning In Biology And Medicine\n\nHands-on Tutorials\n\nhttps://seandavi.github.io/RBiocBook\nMany online courses and tutorials\n\nBlogs and online materials\n\nhttps://blog.recast.ai/machine-learning-algorithms/\nhttps://www.youtube.com/channel/UCWN3xxRkmTPmbKwht9FuE5A\nhttps://www.youtube.com/c/joshstarmer\n\nMachine Learning in R\n\nhttps://www.datacamp.com/community/tutorials/machine-learning-in-r\nhttps://daviddalpiaz.github.io/r4sl/"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#introduction",
+    "href": "2024-09-19-ai-history/index.html#introduction",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Introduction",
+    "text": "Introduction\n\nArtificial Intelligence (AI) and Machine Learning (ML) have a rich history\nFrom early concepts to modern applications\nThis presentation covers key milestones and breakthroughs"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#early-beginnings-1940s-1950s",
+    "href": "2024-09-19-ai-history/index.html#early-beginnings-1940s-1950s",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Early Beginnings (1940s-1950s)",
+    "text": "Early Beginnings (1940s-1950s)\n\n\n\n1936: Turing and the Computable Numbers (Turing 1936)\n1943: McCulloch and Pitts create a computational model for neural networks\n1950: Alan Turing proposes the Turing Test (Turing 1950) and Paper\n1956: Dartmouth Conference coins the term “Artificial Intelligence”"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#i-robot-by-isaac-asimov",
+    "href": "2024-09-19-ai-history/index.html#i-robot-by-isaac-asimov",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "“I, Robot” by Isaac Asimov",
+    "text": "“I, Robot” by Isaac Asimov\n\n\n\nPublished in 1950 by Gnome Press\nCollection of nine science fiction short stories\nOriginally appeared in super-science fiction magazines (1940-1950)\nIntroduced the concept of positronic robots and the Three Laws of Robotics\n\n\n\n\nAsimov (1950)\n\nAsimov’s work laid the foundation for ethical considerations in AI development."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#the-three-laws-of-robotics",
+    "href": "2024-09-19-ai-history/index.html#the-three-laws-of-robotics",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "The Three Laws of Robotics",
+    "text": "The Three Laws of Robotics\n\nA robot may not injure a human being or, through inaction, allow a human being to come to harm.\nA robot must obey the orders given it by human beings except where such orders would conflict with the First Law.\nA robot must protect its own existence as long as such protection does not conflict with the First or Second Laws.\n\n\nAsimov later added the Zeroth Law that superseded the others:\n\nA robot may not harm humanity, or, by inaction, allow humanity to come to harm.\n\n\n\nThese laws have become a cornerstone in discussions about AI ethics and safety."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#i-robots-influence-on-modern-ai",
+    "href": "2024-09-19-ai-history/index.html#i-robots-influence-on-modern-ai",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "“I, Robot”’s Influence on Modern AI",
+    "text": "“I, Robot”’s Influence on Modern AI\n\nSparked discussions on machine ethics and AI safety\nInfluenced researchers to consider ethical implications of AI development\nConcept of “friendly AI” draws parallels to Asimov’s laws\nChallenges presented in stories mirror real-world AI alignment problems\n\n\nWhile not directly implementable, Asimov’s laws have shaped thinking about AI governance and ethics in the field."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#the-turing-test",
+    "href": "2024-09-19-ai-history/index.html#the-turing-test",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "1950: The Turing Test",
+    "text": "1950: The Turing Test\n\nWho’s the real human?"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#the-golden-years-1956-1974",
+    "href": "2024-09-19-ai-history/index.html#the-golden-years-1956-1974",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "The Golden Years (1956-1974)",
+    "text": "The Golden Years (1956-1974)\n\nDevelopment of early AI programs\n1957: Frank Rosenblatt develops the Perceptron\n1964: ELIZA, one of the first chatbots, is created by Joseph Weizenbaum"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#eliza-one-of-the-first-chatbots",
+    "href": "2024-09-19-ai-history/index.html#eliza-one-of-the-first-chatbots",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "1964: ELIZA, one of the first chatbots",
+    "text": "1964: ELIZA, one of the first chatbots\n\n\n\n\n\n\n\n\nAlthough ELIZA was limited in terms of actual understanding, it marked an important milestone in the development of AI and human-computer interaction, showing how conversation-based interfaces could influence the perception of intelligence.\n\n\nELIZA was one of the earliest chatbots, developed in the mid-1960s by Joseph Weizenbaum, a computer scientist at MIT. The program was designed to simulate a conversation between a human and a machine, and it did so by using pattern matching and substitution methodology, a simple but effective form of natural language processing.\nELIZA’s most famous script was called “DOCTOR,” which mimicked a Rogerian psychotherapist. In this role, ELIZA would take users’ input and reflect their statements back to them in a way that encouraged further conversation. For example, if a user said, “I’m feeling sad today,” ELIZA might respond with, “Why do you think you’re feeling sad today?”\nWhile ELIZA’s responses were largely superficial, many users were surprised at how human-like they seemed. Weizenbaum created ELIZA to demonstrate how easily people could attribute human-like understanding to a machine, even when its responses were formulaic. He was struck by how quickly people became emotionally attached to the program, despite knowing it was not genuinely intelligent.\nAlthough ELIZA was limited in terms of actual understanding, it marked an important milestone in the development of AI and human-computer interaction, showing how conversation-based interfaces could influence the perception of intelligence."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#what-is-an-expert-system",
+    "href": "2024-09-19-ai-history/index.html#what-is-an-expert-system",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "What is an Expert System?",
+    "text": "What is an Expert System?\n\nDefinition: Computer program that emulates decision-making ability of a human expert\nKey Components:\n\nKnowledge Base: Contains domain-specific information and rules\nInference Engine: Applies rules to the knowledge to derive new information\nUser Interface: Allows non-expert users to interact with the system\n\nCharacteristics:\n\nSolves complex problems by reasoning through bodies of knowledge\nSeparates domain knowledge from the reasoning mechanism\nCan explain its decisions and reasoning"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#what-is-an-expert-system-1",
+    "href": "2024-09-19-ai-history/index.html#what-is-an-expert-system-1",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "What is an Expert System?",
+    "text": "What is an Expert System?\n\nApplications:\n\nMedical diagnosis (e.g., MYCIN)\nFinancial planning\nManufacturing process control\nScientific analysis\n\nAdvantages:\n\nConsistent and accurate decisions\nPreservation of expert knowledge\nAbility to handle complex scenarios\n\nLimitations:\n\nLimited to specific domains (narrow AI)\nDifficulty in capturing tacit knowledge\nMay struggle with unusual or unprecedented situations"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#example-expert-system-mycin",
+    "href": "2024-09-19-ai-history/index.html#example-expert-system-mycin",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Example Expert system: MYCIN",
+    "text": "Example Expert system: MYCIN\n\nDeveloped in the early 1970s at Stanford University\nOne of the first rule-based expert systems in medicine\nPurpose: Assist physicians in diagnosing and treating bacterial infections\nFocused on bloodstream infections (bacteremia and meningitis)\nNamed after antibiotics (many of which end in “-mycin”)"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#mycin-key-features-and-functionality",
+    "href": "2024-09-19-ai-history/index.html#mycin-key-features-and-functionality",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "MYCIN: Key Features and Functionality",
+    "text": "MYCIN: Key Features and Functionality\n\nRule-based system with approximately 600 rules\nUsed backward chaining inference engine\nIncorporated certainty factors to handle uncertainty\nAsked users a series of yes/no questions about symptoms and test results\nProvided diagnosis recommendations and suggested antibiotic treatments\nExplained its reasoning process to user"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#mycin-impact-and-legacy",
+    "href": "2024-09-19-ai-history/index.html#mycin-impact-and-legacy",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "MYCIN: Impact and Legacy",
+    "text": "MYCIN: Impact and Legacy\n\nNever used in clinical practice due to ethical and legal concerns\nAchieved performance comparable to human experts in its domain\nPioneered several important concepts in AI and expert systems:\n\nSeparation of knowledge base from inference engine\nExplanation of reasoning\nHandling of uncertainty\n\nInfluenced development of subsequent expert systems and clinical decision support tools\nDemonstrated potential of AI in healthcare, paving way for modern medical AI applications"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#increased-computational-power",
+    "href": "2024-09-19-ai-history/index.html#increased-computational-power",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Increased Computational Power",
+    "text": "Increased Computational Power\n\nAdvancement:\n\nRapid growth of CPUs and the emergence of GPUs (Graphics Processing Units).\n\nImpact:\n\nEnabled the training of deeper neural networks essential for various AI tasks."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#big-data",
+    "href": "2024-09-19-ai-history/index.html#big-data",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Big Data",
+    "text": "Big Data\n\nAdvancement:\n\nExplosion of digital data from the internet, social media, and sensors.\n\nImpact:\n\nFacilitated the development of accurate models as ML algorithms require substantial data to learn effectively."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#open-source-frameworks-and-libraries",
+    "href": "2024-09-19-ai-history/index.html#open-source-frameworks-and-libraries",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Open Source Frameworks and Libraries",
+    "text": "Open Source Frameworks and Libraries\n\nAdvancement:\n\nEmergence of libraries like TensorFlow (2015), Keras (2015), and Scikit-learn (2007).\n\nImpact:\n\nLowered the barrier for AI development, allowing more practitioners to innovate in the field."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#advances-in-algorithms",
+    "href": "2024-09-19-ai-history/index.html#advances-in-algorithms",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Advances in Algorithms",
+    "text": "Advances in Algorithms\n\nAdvancement:\n\nResearch in new algorithms, such as support vector machines and deep learning architectures.\n\nImpact:\n\nImproved AI performance across applications, particularly in image and speech recognition."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#cloud-computing",
+    "href": "2024-09-19-ai-history/index.html#cloud-computing",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Cloud Computing",
+    "text": "Cloud Computing\n\nAdvancement:\n\nRise of cloud computing platforms (e.g., AWS, Google Cloud, Microsoft Azure).\n\nImpact:\n\nProvided scalable resources for storage and computation, enabling extensive ML experimentation."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#collaborative-research-and-knowledge-sharing",
+    "href": "2024-09-19-ai-history/index.html#collaborative-research-and-knowledge-sharing",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Collaborative Research and Knowledge Sharing",
+    "text": "Collaborative Research and Knowledge Sharing\n\nAdvancement:\n\nIncreased collaboration and sharing of findings through conferences and online platforms.\n\nImpact:\n\nAccelerated innovation in AI and ML as researchers built upon each other’s work."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#investment-and-interest-from-industry",
+    "href": "2024-09-19-ai-history/index.html#investment-and-interest-from-industry",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Investment and Interest from Industry",
+    "text": "Investment and Interest from Industry\n\nAdvancement:\n\nGrowing interest and investment from tech giants and startups in AI technologies.\n\nImpact:\n\nLed to the development of practical applications and commercial products, driving further research."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#deep-learning-resurgence-2006",
+    "href": "2024-09-19-ai-history/index.html#deep-learning-resurgence-2006",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Deep Learning Resurgence (2006)",
+    "text": "Deep Learning Resurgence (2006)\n\nMilestone: Geoffrey Hinton and team introduced “deep belief networks.”\nImpact: Marked the resurgence of deep learning and laid the foundation for modern AI applications, especially in image and speech recognition."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
+    "href": "2024-09-19-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "AlexNet Wins ImageNet Competition (2012)",
+    "text": "AlexNet Wins ImageNet Competition (2012)\n\nMilestone: Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton’s deep neural network (AlexNet) won the ImageNet competition.\nImpact: Showcased the power of convolutional neural networks (CNNs) and triggered widespread adoption in computer vision tasks."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
+    "href": "2024-09-19-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "IBM Watson Wins Jeopardy! (2011)",
+    "text": "IBM Watson Wins Jeopardy! (2011)\n\nMilestone: IBM Watson defeated champions Ken Jennings and Brad Rutter on Jeopardy!.\nImpact: Demonstrated AI’s ability to process and understand natural language, leading to applications in healthcare, finance, and customer service."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
+    "href": "2024-09-19-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "MD Anderson sets Watson aside (2017-2018)",
+    "text": "MD Anderson sets Watson aside (2017-2018)\n\nSee Herper (n.d.)"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#generative-adversarial-networks-gans-2014",
+    "href": "2024-09-19-ai-history/index.html#generative-adversarial-networks-gans-2014",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Generative Adversarial Networks (GANs) (2014)",
+    "text": "Generative Adversarial Networks (GANs) (2014)\n\nMilestone: Ian Goodfellow introduced GANs, a model where two neural networks compete to generate realistic data.\nImpact: Revolutionized image generation and unsupervised learning, powering innovations like deepfakes and AI-generated art."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#alphago-defeats-world-champion-2016",
+    "href": "2024-09-19-ai-history/index.html#alphago-defeats-world-champion-2016",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "AlphaGo Defeats World Champion (2016)",
+    "text": "AlphaGo Defeats World Champion (2016)\n\nMilestone: Google DeepMind’s AlphaGo defeated Go champion Lee Sedol.\nImpact: Showcased the capability of reinforcement learning and deep neural networks in mastering complex strategic games."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#transformer-architecture-2017",
+    "href": "2024-09-19-ai-history/index.html#transformer-architecture-2017",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Transformer Architecture (2017)",
+    "text": "Transformer Architecture (2017)\n\nMilestone: Vaswani et al. introduced the Transformer model, revolutionizing natural language processing.\nImpact: Laid the groundwork for state-of-the-art NLP models like BERT and GPT, transforming language understanding and generation."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#ai-and-ml-in-social-media-2010s",
+    "href": "2024-09-19-ai-history/index.html#ai-and-ml-in-social-media-2010s",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "AI and ML in Social Media (2010s)",
+    "text": "AI and ML in Social Media (2010s)\n\nMilestone: Social media platforms adopted AI for content recommendation and moderation.\nImpact: Enhanced user engagement and experience, but also raised concerns about echo chambers, misinformation, and algorithmic bias."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#alphafold-solves-protein-folding-2020",
+    "href": "2024-09-19-ai-history/index.html#alphafold-solves-protein-folding-2020",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "AlphaFold Solves Protein Folding (2020)",
+    "text": "AlphaFold Solves Protein Folding (2020)\n\nMilestone: DeepMind’s AlphaFold achieved breakthrough accuracy in predicting protein structures.\nImpact: Solved a 50-year-old challenge in biology, opening new doors in drug discovery and molecular biology."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#gpt-4-and-large-language-models-2023",
+    "href": "2024-09-19-ai-history/index.html#gpt-4-and-large-language-models-2023",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "GPT-4 and Large Language Models (2023)",
+    "text": "GPT-4 and Large Language Models (2023)\n\nMilestone: OpenAI’s GPT-4 showcased the potential of large-scale language models for complex, nuanced language understanding.\nImpact: Accelerated the development of AI-driven content creation and enhanced human-computer interaction."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#future-directions",
+    "href": "2024-09-19-ai-history/index.html#future-directions",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Future Directions",
+    "text": "Future Directions\n\nArtificial General Intelligence (AGI) research\nQuantum computing and AI\nNeuromorphic computing\nHuman-AI collaboration\n\nFor deeper dive into the history, see (Norman 2024)."
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#challenges-and-opportunities",
+    "href": "2024-09-19-ai-history/index.html#challenges-and-opportunities",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Challenges and Opportunities",
+    "text": "Challenges and Opportunities\n\nEthical AI development\nAI governance and regulation\nAddressing AI bias and fairness\nBalancing innovation with responsible development"
+  },
+  {
+    "objectID": "2024-09-19-ai-history/index.html#references",
+    "href": "2024-09-19-ai-history/index.html#references",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "References",
+    "text": "References\n\n\n\n\nAsimov, Isaac. 1950. I, Robot. Bantam hardcover ed. (2). New York: Bantam Books.\n\n\nHerper, Matthew. n.d. “MD Anderson Benches IBM Watson In Setback For Artificial Intelligence In Medicine.” Forbes. Accessed October 2, 2024. https://www.forbes.com/sites/matthewherper/2017/02/19/md-anderson-benches-ibm-watson-in-setback-for-artificial-intelligence-in-medicine/.\n\n\nNorman, Jeremy. 2024. “History of Information.” https://www.historyofinformation.com/?cat=71.\n\n\nTuring, Alan. 1936. “On Computable Numbers, with an Application to the Entscheidungsproblem.” https://www.abelard.org/turpap2/tp2-ie.asp.\n\n\n———. 1950. “Computing Machinery and Intelligence.” Mind 59 (October): 433–60. https://doi.org/10.1093/mind/lix.236.433."
   },
   {
     "objectID": "2024-10-23-ai-in-medical-education/index.html#section",
@@ -1673,606 +2261,270 @@
     "text": "Quarto\nQuarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#introduction",
-    "href": "2024-09-19-ai-history/index.html#introduction",
+    "objectID": "2024-10-30-ai-history/index.html#introduction",
+    "href": "2024-10-30-ai-history/index.html#introduction",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Introduction",
     "text": "Introduction\n\nArtificial Intelligence (AI) and Machine Learning (ML) have a rich history\nFrom early concepts to modern applications\nThis presentation covers key milestones and breakthroughs"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#early-beginnings-1940s-1950s",
-    "href": "2024-09-19-ai-history/index.html#early-beginnings-1940s-1950s",
+    "objectID": "2024-10-30-ai-history/index.html#early-beginnings-1940s-1950s",
+    "href": "2024-10-30-ai-history/index.html#early-beginnings-1940s-1950s",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Early Beginnings (1940s-1950s)",
     "text": "Early Beginnings (1940s-1950s)\n\n\n\n1936: Turing and the Computable Numbers (Turing 1936)\n1943: McCulloch and Pitts create a computational model for neural networks\n1950: Alan Turing proposes the Turing Test (Turing 1950) and Paper\n1956: Dartmouth Conference coins the term “Artificial Intelligence”"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#i-robot-by-isaac-asimov",
-    "href": "2024-09-19-ai-history/index.html#i-robot-by-isaac-asimov",
+    "objectID": "2024-10-30-ai-history/index.html#mcculloch-and-pitts-neuron",
+    "href": "2024-10-30-ai-history/index.html#mcculloch-and-pitts-neuron",
     "title": "The History of Artificial Intelligence and Machine Learning",
-    "section": "“I, Robot” by Isaac Asimov",
-    "text": "“I, Robot” by Isaac Asimov\n\n\n\nPublished in 1950 by Gnome Press\nCollection of nine science fiction short stories\nOriginally appeared in super-science fiction magazines (1940-1950)\nIntroduced the concept of positronic robots and the Three Laws of Robotics\n\n\n\n\nAsimov (1950)\n\nAsimov’s work laid the foundation for ethical considerations in AI development."
+    "section": "1943: McCulloch and Pitts Neuron",
+    "text": "1943: McCulloch and Pitts Neuron\n\n\n\n\n\nWarren McCulloch (neurophysiologist) and Walter Pitts (logician)"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#the-three-laws-of-robotics",
-    "href": "2024-09-19-ai-history/index.html#the-three-laws-of-robotics",
+    "objectID": "2024-10-30-ai-history/index.html#mcculloch-and-pitts-neuron-1",
+    "href": "2024-10-30-ai-history/index.html#mcculloch-and-pitts-neuron-1",
     "title": "The History of Artificial Intelligence and Machine Learning",
-    "section": "The Three Laws of Robotics",
-    "text": "The Three Laws of Robotics\n\nA robot may not injure a human being or, through inaction, allow a human being to come to harm.\nA robot must obey the orders given it by human beings except where such orders would conflict with the First Law.\nA robot must protect its own existence as long as such protection does not conflict with the First or Second Laws.\n\n\nAsimov later added the Zeroth Law that superseded the others:\n\nA robot may not harm humanity, or, by inaction, allow humanity to come to harm.\n\n\n\nThese laws have become a cornerstone in discussions about AI ethics and safety."
+    "section": "1943: McCulloch and Pitts Neuron",
+    "text": "1943: McCulloch and Pitts Neuron\n\n\n\n\n\n\n\nWarren McCulloch (neurophysiologist) and Walter Pitts (logician)"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#i-robots-influence-on-modern-ai",
-    "href": "2024-09-19-ai-history/index.html#i-robots-influence-on-modern-ai",
-    "title": "The History of Artificial Intelligence and Machine Learning",
-    "section": "“I, Robot”’s Influence on Modern AI",
-    "text": "“I, Robot”’s Influence on Modern AI\n\nSparked discussions on machine ethics and AI safety\nInfluenced researchers to consider ethical implications of AI development\nConcept of “friendly AI” draws parallels to Asimov’s laws\nChallenges presented in stories mirror real-world AI alignment problems\n\n\nWhile not directly implementable, Asimov’s laws have shaped thinking about AI governance and ethics in the field."
-  },
-  {
-    "objectID": "2024-09-19-ai-history/index.html#the-turing-test",
-    "href": "2024-09-19-ai-history/index.html#the-turing-test",
+    "objectID": "2024-10-30-ai-history/index.html#the-turing-test",
+    "href": "2024-10-30-ai-history/index.html#the-turing-test",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "1950: The Turing Test",
     "text": "1950: The Turing Test\n\nWho’s the real human?"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#the-golden-years-1956-1974",
-    "href": "2024-09-19-ai-history/index.html#the-golden-years-1956-1974",
+    "objectID": "2024-10-30-ai-history/index.html#i-robot-by-isaac-asimov",
+    "href": "2024-10-30-ai-history/index.html#i-robot-by-isaac-asimov",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "“I, Robot” by Isaac Asimov",
+    "text": "“I, Robot” by Isaac Asimov\n\n\n\nPublished in 1950 by Gnome Press\nCollection of nine science fiction short stories\nOriginally appeared in super-science fiction magazines (1940-1950)\nIntroduced the concept of positronic robots and the Three Laws of Robotics\n\n\n\nAsimov (1950)"
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#the-three-laws-of-robotics",
+    "href": "2024-10-30-ai-history/index.html#the-three-laws-of-robotics",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "The Three Laws of Robotics",
+    "text": "The Three Laws of Robotics\n\nA robot may not injure a human being or, through inaction, allow a human being to come to harm.\nA robot must obey the orders given it by human beings except where such orders would conflict with the First Law.\nA robot must protect its own existence as long as such protection does not conflict with the First or Second Laws.\n\n\nAsimov later added the Zeroth Law that superseded the others:\n\nA robot may not harm humanity, or, by inaction, allow humanity to come to harm.\n\n\n\nThese laws have become a cornerstone in discussions about AI ethics and safety."
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#i-robots-influence-on-modern-ai",
+    "href": "2024-10-30-ai-history/index.html#i-robots-influence-on-modern-ai",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "“I, Robot”’s Influence on Modern AI",
+    "text": "“I, Robot”’s Influence on Modern AI\n\nSparked discussions on machine ethics and AI safety\nInfluenced researchers to consider ethical implications of AI development\nConcept of “friendly AI” draws parallels to Asimov’s laws\nChallenges presented in stories mirror real-world AI alignment problems"
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#the-dartmouth-conference",
+    "href": "2024-10-30-ai-history/index.html#the-dartmouth-conference",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "1956: The Dartmouth Conference",
+    "text": "1956: The Dartmouth Conference\nThe Dartmouth Conference, held in the summer of 1956, is considered the birthplace of artificial intelligence. The conference was organized by John McCarthy, Marvin Minsky, Nathaniel Rochester, and Claude Shannon, who invited researchers to discuss the potential of creating machines that could simulate human intelligence.\n\nMarvin Minsky, Claude Shannon, Ray Solomonoff and other scientists at the Dartmouth Summer Research Project on Artificial Intelligence (Photo: Margaret Minsky)."
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#the-golden-years-1956-1974",
+    "href": "2024-10-30-ai-history/index.html#the-golden-years-1956-1974",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "The Golden Years (1956-1974)",
     "text": "The Golden Years (1956-1974)\n\nDevelopment of early AI programs\n1957: Frank Rosenblatt develops the Perceptron\n1964: ELIZA, one of the first chatbots, is created by Joseph Weizenbaum"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#eliza-one-of-the-first-chatbots",
-    "href": "2024-09-19-ai-history/index.html#eliza-one-of-the-first-chatbots",
+    "objectID": "2024-10-30-ai-history/index.html#the-perceptron",
+    "href": "2024-10-30-ai-history/index.html#the-perceptron",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "1957: The Perceptron",
+    "text": "1957: The Perceptron"
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#eliza-one-of-the-first-chatbots",
+    "href": "2024-10-30-ai-history/index.html#eliza-one-of-the-first-chatbots",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "1964: ELIZA, one of the first chatbots",
     "text": "1964: ELIZA, one of the first chatbots\n\n\n\n\n\n\n\n\nAlthough ELIZA was limited in terms of actual understanding, it marked an important milestone in the development of AI and human-computer interaction, showing how conversation-based interfaces could influence the perception of intelligence.\n\n\nELIZA was one of the earliest chatbots, developed in the mid-1960s by Joseph Weizenbaum, a computer scientist at MIT. The program was designed to simulate a conversation between a human and a machine, and it did so by using pattern matching and substitution methodology, a simple but effective form of natural language processing.\nELIZA’s most famous script was called “DOCTOR,” which mimicked a Rogerian psychotherapist. In this role, ELIZA would take users’ input and reflect their statements back to them in a way that encouraged further conversation. For example, if a user said, “I’m feeling sad today,” ELIZA might respond with, “Why do you think you’re feeling sad today?”\nWhile ELIZA’s responses were largely superficial, many users were surprised at how human-like they seemed. Weizenbaum created ELIZA to demonstrate how easily people could attribute human-like understanding to a machine, even when its responses were formulaic. He was struck by how quickly people became emotionally attached to the program, despite knowing it was not genuinely intelligent.\nAlthough ELIZA was limited in terms of actual understanding, it marked an important milestone in the development of AI and human-computer interaction, showing how conversation-based interfaces could influence the perception of intelligence."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#what-is-an-expert-system",
-    "href": "2024-09-19-ai-history/index.html#what-is-an-expert-system",
+    "objectID": "2024-10-30-ai-history/index.html#what-is-an-expert-system",
+    "href": "2024-10-30-ai-history/index.html#what-is-an-expert-system",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "What is an Expert System?",
     "text": "What is an Expert System?\n\nDefinition: Computer program that emulates decision-making ability of a human expert\nKey Components:\n\nKnowledge Base: Contains domain-specific information and rules\nInference Engine: Applies rules to the knowledge to derive new information\nUser Interface: Allows non-expert users to interact with the system\n\nCharacteristics:\n\nSolves complex problems by reasoning through bodies of knowledge\nSeparates domain knowledge from the reasoning mechanism\nCan explain its decisions and reasoning"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#what-is-an-expert-system-1",
-    "href": "2024-09-19-ai-history/index.html#what-is-an-expert-system-1",
+    "objectID": "2024-10-30-ai-history/index.html#what-is-an-expert-system-1",
+    "href": "2024-10-30-ai-history/index.html#what-is-an-expert-system-1",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "What is an Expert System?",
     "text": "What is an Expert System?\n\nApplications:\n\nMedical diagnosis (e.g., MYCIN)\nFinancial planning\nManufacturing process control\nScientific analysis\n\nAdvantages:\n\nConsistent and accurate decisions\nPreservation of expert knowledge\nAbility to handle complex scenarios\n\nLimitations:\n\nLimited to specific domains (narrow AI)\nDifficulty in capturing tacit knowledge\nMay struggle with unusual or unprecedented situations"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#example-expert-system-mycin",
-    "href": "2024-09-19-ai-history/index.html#example-expert-system-mycin",
+    "objectID": "2024-10-30-ai-history/index.html#example-expert-system-mycin",
+    "href": "2024-10-30-ai-history/index.html#example-expert-system-mycin",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Example Expert system: MYCIN",
     "text": "Example Expert system: MYCIN\n\nDeveloped in the early 1970s at Stanford University\nOne of the first rule-based expert systems in medicine\nPurpose: Assist physicians in diagnosing and treating bacterial infections\nFocused on bloodstream infections (bacteremia and meningitis)\nNamed after antibiotics (many of which end in “-mycin”)"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#mycin-key-features-and-functionality",
-    "href": "2024-09-19-ai-history/index.html#mycin-key-features-and-functionality",
+    "objectID": "2024-10-30-ai-history/index.html#mycin-key-features-and-functionality",
+    "href": "2024-10-30-ai-history/index.html#mycin-key-features-and-functionality",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "MYCIN: Key Features and Functionality",
     "text": "MYCIN: Key Features and Functionality\n\nRule-based system with approximately 600 rules\nUsed backward chaining inference engine\nIncorporated certainty factors to handle uncertainty\nAsked users a series of yes/no questions about symptoms and test results\nProvided diagnosis recommendations and suggested antibiotic treatments\nExplained its reasoning process to user"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#mycin-impact-and-legacy",
-    "href": "2024-09-19-ai-history/index.html#mycin-impact-and-legacy",
+    "objectID": "2024-10-30-ai-history/index.html#mycin-impact-and-legacy",
+    "href": "2024-10-30-ai-history/index.html#mycin-impact-and-legacy",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "MYCIN: Impact and Legacy",
     "text": "MYCIN: Impact and Legacy\n\nNever used in clinical practice due to ethical and legal concerns\nAchieved performance comparable to human experts in its domain\nPioneered several important concepts in AI and expert systems:\n\nSeparation of knowledge base from inference engine\nExplanation of reasoning\nHandling of uncertainty\n\nInfluenced development of subsequent expert systems and clinical decision support tools\nDemonstrated potential of AI in healthcare, paving way for modern medical AI applications"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#increased-computational-power",
-    "href": "2024-09-19-ai-history/index.html#increased-computational-power",
+    "objectID": "2024-10-30-ai-history/index.html#increased-computational-power",
+    "href": "2024-10-30-ai-history/index.html#increased-computational-power",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Increased Computational Power",
     "text": "Increased Computational Power\n\nAdvancement:\n\nRapid growth of CPUs and the emergence of GPUs (Graphics Processing Units).\n\nImpact:\n\nEnabled the training of deeper neural networks essential for various AI tasks."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#big-data",
-    "href": "2024-09-19-ai-history/index.html#big-data",
+    "objectID": "2024-10-30-ai-history/index.html#big-data",
+    "href": "2024-10-30-ai-history/index.html#big-data",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Big Data",
     "text": "Big Data\n\nAdvancement:\n\nExplosion of digital data from the internet, social media, and sensors.\n\nImpact:\n\nFacilitated the development of accurate models as ML algorithms require substantial data to learn effectively."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#open-source-frameworks-and-libraries",
-    "href": "2024-09-19-ai-history/index.html#open-source-frameworks-and-libraries",
+    "objectID": "2024-10-30-ai-history/index.html#open-source-frameworks-and-libraries",
+    "href": "2024-10-30-ai-history/index.html#open-source-frameworks-and-libraries",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Open Source Frameworks and Libraries",
     "text": "Open Source Frameworks and Libraries\n\nAdvancement:\n\nEmergence of libraries like TensorFlow (2015), Keras (2015), and Scikit-learn (2007).\n\nImpact:\n\nLowered the barrier for AI development, allowing more practitioners to innovate in the field."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#advances-in-algorithms",
-    "href": "2024-09-19-ai-history/index.html#advances-in-algorithms",
+    "objectID": "2024-10-30-ai-history/index.html#advances-in-algorithms",
+    "href": "2024-10-30-ai-history/index.html#advances-in-algorithms",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Advances in Algorithms",
     "text": "Advances in Algorithms\n\nAdvancement:\n\nResearch in new algorithms, such as support vector machines and deep learning architectures.\n\nImpact:\n\nImproved AI performance across applications, particularly in image and speech recognition."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#cloud-computing",
-    "href": "2024-09-19-ai-history/index.html#cloud-computing",
+    "objectID": "2024-10-30-ai-history/index.html#cloud-computing",
+    "href": "2024-10-30-ai-history/index.html#cloud-computing",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Cloud Computing",
     "text": "Cloud Computing\n\nAdvancement:\n\nRise of cloud computing platforms (e.g., AWS, Google Cloud, Microsoft Azure).\n\nImpact:\n\nProvided scalable resources for storage and computation, enabling extensive ML experimentation."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#collaborative-research-and-knowledge-sharing",
-    "href": "2024-09-19-ai-history/index.html#collaborative-research-and-knowledge-sharing",
+    "objectID": "2024-10-30-ai-history/index.html#collaborative-research-and-knowledge-sharing",
+    "href": "2024-10-30-ai-history/index.html#collaborative-research-and-knowledge-sharing",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Collaborative Research and Knowledge Sharing",
     "text": "Collaborative Research and Knowledge Sharing\n\nAdvancement:\n\nIncreased collaboration and sharing of findings through conferences and online platforms.\n\nImpact:\n\nAccelerated innovation in AI and ML as researchers built upon each other’s work."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#investment-and-interest-from-industry",
-    "href": "2024-09-19-ai-history/index.html#investment-and-interest-from-industry",
+    "objectID": "2024-10-30-ai-history/index.html#investment-and-interest-from-industry",
+    "href": "2024-10-30-ai-history/index.html#investment-and-interest-from-industry",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Investment and Interest from Industry",
     "text": "Investment and Interest from Industry\n\nAdvancement:\n\nGrowing interest and investment from tech giants and startups in AI technologies.\n\nImpact:\n\nLed to the development of practical applications and commercial products, driving further research."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#deep-learning-resurgence-2006",
-    "href": "2024-09-19-ai-history/index.html#deep-learning-resurgence-2006",
+    "objectID": "2024-10-30-ai-history/index.html#deep-learning-resurgence-2006",
+    "href": "2024-10-30-ai-history/index.html#deep-learning-resurgence-2006",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Deep Learning Resurgence (2006)",
     "text": "Deep Learning Resurgence (2006)\n\nMilestone: Geoffrey Hinton and team introduced “deep belief networks.”\nImpact: Marked the resurgence of deep learning and laid the foundation for modern AI applications, especially in image and speech recognition."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
-    "href": "2024-09-19-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
+    "objectID": "2024-10-30-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
+    "href": "2024-10-30-ai-history/index.html#alexnet-wins-imagenet-competition-2012",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "AlexNet Wins ImageNet Competition (2012)",
     "text": "AlexNet Wins ImageNet Competition (2012)\n\nMilestone: Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton’s deep neural network (AlexNet) won the ImageNet competition.\nImpact: Showcased the power of convolutional neural networks (CNNs) and triggered widespread adoption in computer vision tasks."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
-    "href": "2024-09-19-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
+    "objectID": "2024-10-30-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
+    "href": "2024-10-30-ai-history/index.html#ibm-watson-wins-jeopardy-2011",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "IBM Watson Wins Jeopardy! (2011)",
     "text": "IBM Watson Wins Jeopardy! (2011)\n\nMilestone: IBM Watson defeated champions Ken Jennings and Brad Rutter on Jeopardy!.\nImpact: Demonstrated AI’s ability to process and understand natural language, leading to applications in healthcare, finance, and customer service."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
-    "href": "2024-09-19-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
+    "objectID": "2024-10-30-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
+    "href": "2024-10-30-ai-history/index.html#md-anderson-sets-watson-aside-2017-2018",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "MD Anderson sets Watson aside (2017-2018)",
     "text": "MD Anderson sets Watson aside (2017-2018)\n\nSee Herper (n.d.)"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#generative-adversarial-networks-gans-2014",
-    "href": "2024-09-19-ai-history/index.html#generative-adversarial-networks-gans-2014",
+    "objectID": "2024-10-30-ai-history/index.html#generative-adversarial-networks-gans-2014",
+    "href": "2024-10-30-ai-history/index.html#generative-adversarial-networks-gans-2014",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Generative Adversarial Networks (GANs) (2014)",
     "text": "Generative Adversarial Networks (GANs) (2014)\n\nMilestone: Ian Goodfellow introduced GANs, a model where two neural networks compete to generate realistic data.\nImpact: Revolutionized image generation and unsupervised learning, powering innovations like deepfakes and AI-generated art."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#alphago-defeats-world-champion-2016",
-    "href": "2024-09-19-ai-history/index.html#alphago-defeats-world-champion-2016",
+    "objectID": "2024-10-30-ai-history/index.html#alphago-defeats-world-champion-2016",
+    "href": "2024-10-30-ai-history/index.html#alphago-defeats-world-champion-2016",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "AlphaGo Defeats World Champion (2016)",
     "text": "AlphaGo Defeats World Champion (2016)\n\nMilestone: Google DeepMind’s AlphaGo defeated Go champion Lee Sedol.\nImpact: Showcased the capability of reinforcement learning and deep neural networks in mastering complex strategic games."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#transformer-architecture-2017",
-    "href": "2024-09-19-ai-history/index.html#transformer-architecture-2017",
+    "objectID": "2024-10-30-ai-history/index.html#transformer-architecture-2017",
+    "href": "2024-10-30-ai-history/index.html#transformer-architecture-2017",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Transformer Architecture (2017)",
     "text": "Transformer Architecture (2017)\n\nMilestone: Vaswani et al. introduced the Transformer model, revolutionizing natural language processing.\nImpact: Laid the groundwork for state-of-the-art NLP models like BERT and GPT, transforming language understanding and generation."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#ai-and-ml-in-social-media-2010s",
-    "href": "2024-09-19-ai-history/index.html#ai-and-ml-in-social-media-2010s",
-    "title": "The History of Artificial Intelligence and Machine Learning",
-    "section": "AI and ML in Social Media (2010s)",
-    "text": "AI and ML in Social Media (2010s)\n\nMilestone: Social media platforms adopted AI for content recommendation and moderation.\nImpact: Enhanced user engagement and experience, but also raised concerns about echo chambers, misinformation, and algorithmic bias."
-  },
-  {
-    "objectID": "2024-09-19-ai-history/index.html#alphafold-solves-protein-folding-2020",
-    "href": "2024-09-19-ai-history/index.html#alphafold-solves-protein-folding-2020",
+    "objectID": "2024-10-30-ai-history/index.html#alphafold-solves-protein-folding-2020",
+    "href": "2024-10-30-ai-history/index.html#alphafold-solves-protein-folding-2020",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "AlphaFold Solves Protein Folding (2020)",
     "text": "AlphaFold Solves Protein Folding (2020)\n\nMilestone: DeepMind’s AlphaFold achieved breakthrough accuracy in predicting protein structures.\nImpact: Solved a 50-year-old challenge in biology, opening new doors in drug discovery and molecular biology."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#gpt-4-and-large-language-models-2023",
-    "href": "2024-09-19-ai-history/index.html#gpt-4-and-large-language-models-2023",
+    "objectID": "2024-10-30-ai-history/index.html#gpt-4-and-large-language-models-2023",
+    "href": "2024-10-30-ai-history/index.html#gpt-4-and-large-language-models-2023",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "GPT-4 and Large Language Models (2023)",
     "text": "GPT-4 and Large Language Models (2023)\n\nMilestone: OpenAI’s GPT-4 showcased the potential of large-scale language models for complex, nuanced language understanding.\nImpact: Accelerated the development of AI-driven content creation and enhanced human-computer interaction."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#future-directions",
-    "href": "2024-09-19-ai-history/index.html#future-directions",
+    "objectID": "2024-10-30-ai-history/index.html#impact",
+    "href": "2024-10-30-ai-history/index.html#impact",
+    "title": "The History of Artificial Intelligence and Machine Learning",
+    "section": "Impact",
+    "text": "Impact\n\n\n\n\n\nNobel prize in chemistry\n\n\n\n\n\n\nNobel prize in physics"
+  },
+  {
+    "objectID": "2024-10-30-ai-history/index.html#future-directions",
+    "href": "2024-10-30-ai-history/index.html#future-directions",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Future Directions",
     "text": "Future Directions\n\nArtificial General Intelligence (AGI) research\nQuantum computing and AI\nNeuromorphic computing\nHuman-AI collaboration\n\nFor deeper dive into the history, see (Norman 2024)."
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#challenges-and-opportunities",
-    "href": "2024-09-19-ai-history/index.html#challenges-and-opportunities",
+    "objectID": "2024-10-30-ai-history/index.html#challenges-and-opportunities",
+    "href": "2024-10-30-ai-history/index.html#challenges-and-opportunities",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "Challenges and Opportunities",
     "text": "Challenges and Opportunities\n\nEthical AI development\nAI governance and regulation\nAddressing AI bias and fairness\nBalancing innovation with responsible development"
   },
   {
-    "objectID": "2024-09-19-ai-history/index.html#references",
-    "href": "2024-09-19-ai-history/index.html#references",
+    "objectID": "2024-10-30-ai-history/index.html#references",
+    "href": "2024-10-30-ai-history/index.html#references",
     "title": "The History of Artificial Intelligence and Machine Learning",
     "section": "References",
     "text": "References\n\n\n\n\nAsimov, Isaac. 1950. I, Robot. Bantam hardcover ed. (2). New York: Bantam Books.\n\n\nHerper, Matthew. n.d. “MD Anderson Benches IBM Watson In Setback For Artificial Intelligence In Medicine.” Forbes. Accessed October 2, 2024. https://www.forbes.com/sites/matthewherper/2017/02/19/md-anderson-benches-ibm-watson-in-setback-for-artificial-intelligence-in-medicine/.\n\n\nNorman, Jeremy. 2024. “History of Information.” https://www.historyofinformation.com/?cat=71.\n\n\nTuring, Alan. 1936. “On Computable Numbers, with an Application to the Entscheidungsproblem.” https://www.abelard.org/turpap2/tp2-ie.asp.\n\n\n———. 1950. “Computing Machinery and Intelligence.” Mind 59 (October): 433–60. https://doi.org/10.1093/mind/lix.236.433."
   },
   {
-    "objectID": "2024-09-20-ml-intro/index.html#outline",
-    "href": "2024-09-20-ml-intro/index.html#outline",
-    "title": "Introduction to Machine Learning",
-    "section": "Outline",
-    "text": "Outline\n\nRelationship between AI and ML\nTypes of Machine Learning\nA little about data\nSupervised Learning\nUnsupervised Learning"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#an-ontology-of-ai",
-    "href": "2024-09-20-ml-intro/index.html#an-ontology-of-ai",
-    "title": "Introduction to Machine Learning",
-    "section": "An Ontology of AI",
-    "text": "An Ontology of AI"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#what-is-machine-learning",
-    "href": "2024-09-20-ml-intro/index.html#what-is-machine-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "What is Machine Learning?",
-    "text": "What is Machine Learning?\nThe study of computer algorithms that improve automatically through experience. It is seen as a subset of artificial intelligence. Machine learning systems give the computer the ability to learn without being explicitly programmed rules."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#what-is-deep-learning",
-    "href": "2024-09-20-ml-intro/index.html#what-is-deep-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "What is Deep Learning?",
-    "text": "What is Deep Learning?\nMachine learning algorithms that are inspired by the structure and function of the brain. Deep learning is a subset of machine learning in artificial intelligence that has networks capable of learning unsupervised from data that is often unstructured (i.e., text or images)."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning",
-    "href": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "AI vs. ML vs. Deep Learning",
-    "text": "AI vs. ML vs. Deep Learning\n\n\nArtificialIntelligence\n\n\nMachineLearning\n\n\nDeepLearning"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning-1",
-    "href": "2024-09-20-ml-intro/index.html#ai-vs.-ml-vs.-deep-learning-1",
-    "title": "Introduction to Machine Learning",
-    "section": "AI vs. ML vs. Deep Learning",
-    "text": "AI vs. ML vs. Deep Learning\n\n\nArtificialIntelligence\n\n\nMachineLearning\n\n\nDeepLearning"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#an-ontology-of-data",
-    "href": "2024-09-20-ml-intro/index.html#an-ontology-of-data",
-    "title": "Introduction to Machine Learning",
-    "section": "An ontology of Data",
-    "text": "An ontology of Data\n\n\n\n\nOne way to think about different classes of data."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#structured-data-vs-unstructured-data",
-    "href": "2024-09-20-ml-intro/index.html#structured-data-vs-unstructured-data",
-    "title": "Introduction to Machine Learning",
-    "section": "Structured Data vs Unstructured Data",
-    "text": "Structured Data vs Unstructured Data\n\n\n\n\n\n\n\n\n\nStructured data\nUnstructured data\n\n\n\n\nWhat is it?\nData that fits in a predefined data model or schema.\nData without an underlying model to discern attributes.\n\n\nBasic example\nAn Excel table.\nA collection of video files.\n\n\nBest for\nA set of predefined observations or characteristics (columns) on a collection of things (rows)\nAn associated collection of data, objects, or files where the attributes change or are unknown.\n\n\nCommon formats\nCSV, TSV, Excel, SQL databases.\nImages, audio, video, text."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#tabular-data",
-    "href": "2024-09-20-ml-intro/index.html#tabular-data",
-    "title": "Introduction to Machine Learning",
-    "section": "Tabular Data",
-    "text": "Tabular Data\n\nRows and columns\nEach column has a specific data type\nEach row represents an observation on a subject (e.g., patient, sample)\n\nTerminology:\n\nFeature: A column in the dataset\nTarget: The variable you are trying to predict\nObservation: A row in the dataset\nDimension: The number of features in the dataset (sometimes represented by \\(p\\))\nSample: A single row in the dataset (usually represented by \\(n\\))"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classes-of-machine-learning",
-    "href": "2024-09-20-ml-intro/index.html#classes-of-machine-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Classes of Machine Learning",
-    "text": "Classes of Machine Learning\n\nBroad classes of machine learning."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#types-of-machine-learning",
-    "href": "2024-09-20-ml-intro/index.html#types-of-machine-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Types of Machine Learning",
-    "text": "Types of Machine Learning\n\nSupervised Learning\n\nClassification\nRegression\n\nUnsupervised Learning\n\nClustering\nDimensionality Reduction\n\nReinforcement Learning"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#reinforecement-learning",
-    "href": "2024-09-20-ml-intro/index.html#reinforecement-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Reinforecement Learning",
-    "text": "Reinforecement Learning\n\nLearning through interaction: Unlike supervised learning where you have labeled data, RL agents learn by interacting with an environment.\nDelayed rewards: The agent doesn’t receive immediate feedback about the optimal action, but rather must learn which actions lead to better cumulative rewards over time.\nExploration vs. exploitation: The agent must balance exploring new actions versus exploiting known good actions.\nSequential decision making: RL deals with sequences of decisions rather than one-time predictions.\n\n\nExamples\n\n\n\nGame playing (e.g., AlphaGo, OpenAI Five)\nRobotics control\n\n\n\nAutonomous driving\nTrading strategies"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#a-map-of-machine-learning-approaches",
-    "href": "2024-09-20-ml-intro/index.html#a-map-of-machine-learning-approaches",
-    "title": "Introduction to Machine Learning",
-    "section": "A map of machine learning approaches",
-    "text": "A map of machine learning approaches\n\n\nhttps://scikit-learn.org/stable/tutorial/machine_learning_map/index.html"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#supervised-learning-1",
-    "href": "2024-09-20-ml-intro/index.html#supervised-learning-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Supervised Learning",
-    "text": "Supervised Learning\n\nGiven a dataset of input-output pairs: \\(\\{(x_1, y_1), (x_2, y_2), \\ldots, (x_n, y_n)\\}\\)\nLearn a function \\(f\\) with parameters \\(\\theta\\) that maps inputs \\(x\\) to outputs \\(y\\) \\[y = f(x; \\theta) + \\epsilon\\]\nObjective: Choose parameters \\(\\theta\\) to minimize the prediction error \\(\\epsilon\\)"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#supervised-learning-2",
-    "href": "2024-09-20-ml-intro/index.html#supervised-learning-2",
-    "title": "Introduction to Machine Learning",
-    "section": "Supervised Learning",
-    "text": "Supervised Learning\nWhen \\(y\\) is a continuous variable (e.g., house prices), it’s a regression problem.\nWhen \\(y\\) is a discrete variable (e.g., spam or not spam), it’s a classification problem.\n\nIt is not a concidence that the same terms are used in statistics! Many machine learning algorithms are based on statistical principles or are generalizations of statistical methods."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification",
-    "href": "2024-09-20-ml-intro/index.html#classification",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification",
-    "text": "Classification"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#regression",
-    "href": "2024-09-20-ml-intro/index.html#regression",
-    "title": "Introduction to Machine Learning",
-    "section": "Regression",
-    "text": "Regression\n\nNot all regression is linear…."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example",
-    "href": "2024-09-20-ml-intro/index.html#classification-example",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example\n\nThe classic iris"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example-1",
-    "href": "2024-09-20-ml-intro/index.html#classification-example-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example\n\n\n\n\n\nSepal.Length\nSepal.Width\nPetal.Length\nPetal.Width\nSpecies\n\n\n\n\n6.2\n2.8\n4.8\n1.8\nvirginica\n\n\n4.8\n3.4\n1.6\n0.2\nsetosa\n\n\n5.0\n3.4\n1.5\n0.2\nsetosa\n\n\n5.9\n3.2\n4.8\n1.8\nversicolor\n\n\n5.8\n4.0\n1.2\n0.2\nsetosa\n\n\n5.8\n2.7\n3.9\n1.2\nversicolor\n\n\n6.7\n3.1\n4.7\n1.5\nversicolor\n\n\n5.6\n2.8\n4.9\n2.0\nvirginica\n\n\n6.3\n2.8\n5.1\n1.5\nvirginica\n\n\n6.3\n2.5\n5.0\n1.9\nvirginica\n\n\n4.6\n3.1\n1.5\n0.2\nsetosa\n\n\n5.5\n2.4\n3.8\n1.1\nversicolor\n\n\n6.5\n3.0\n5.2\n2.0\nvirginica\n\n\n5.6\n3.0\n4.5\n1.5\nversicolor\n\n\n7.3\n2.9\n6.3\n1.8\nvirginica\n\n\n6.1\n3.0\n4.9\n1.8\nvirginica\n\n\n4.3\n3.0\n1.1\n0.1\nsetosa\n\n\n6.4\n3.2\n5.3\n2.3\nvirginica\n\n\n4.8\n3.0\n1.4\n0.3\nsetosa\n\n\n6.1\n2.9\n4.7\n1.4\nversicolor"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example-2",
-    "href": "2024-09-20-ml-intro/index.html#classification-example-2",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#training-and-testing",
-    "href": "2024-09-20-ml-intro/index.html#training-and-testing",
-    "title": "Introduction to Machine Learning",
-    "section": "Training and Testing",
-    "text": "Training and Testing\n\n\nTraining Data: Used to teach the model. It consists of input-output pairs for a supervised learning task.\nTesting Data: Used to evaluate the model’s performance. It should be separate from the training data, but come from the same distribution or population.\nValidation Data: Used for tuning hyperparameters. Hyperparameters are settings that control the learning process (e.g., k in k-NN, learning rate in neural networks)."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#generalizability",
-    "href": "2024-09-20-ml-intro/index.html#generalizability",
-    "title": "Introduction to Machine Learning",
-    "section": "Generalizability",
-    "text": "Generalizability\n\nThe ability of a model to perform well on unseen data\n\nThis table shows the relationship between training error, testing error, and overfitting, good fit, and underfitting.\n\n\n\nTraining Error\nTesting Error\nModel Fit\n\n\n\n\nLow\nHigh\nOverfit\n\n\nLow\nLow\nGood Fit\n\n\nHigh\nHigh\nUnderfit (poor performance)"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#bias-and-variance",
-    "href": "2024-09-20-ml-intro/index.html#bias-and-variance",
-    "title": "Introduction to Machine Learning",
-    "section": "Bias and Variance",
-    "text": "Bias and Variance\n\nBias: Error from incorrect assumptions in the learning algorithm\nVariance: Error from sensitivity to small fluctuations in the training set\nBias-Variance Tradeoff: The conflict in trying to simultaneously minimize these two sources of error"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example-3",
-    "href": "2024-09-20-ml-intro/index.html#classification-example-3",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example-4",
-    "href": "2024-09-20-ml-intro/index.html#classification-example-4",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classification-example-5",
-    "href": "2024-09-20-ml-intro/index.html#classification-example-5",
-    "title": "Introduction to Machine Learning",
-    "section": "Classification Example",
-    "text": "Classification Example"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#regression-example",
-    "href": "2024-09-20-ml-intro/index.html#regression-example",
-    "title": "Introduction to Machine Learning",
-    "section": "Regression Example",
-    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-49.071 -11.047  -0.692  12.970  41.897 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -0.72808    3.68575  -0.198    0.844    \nx            2.05022    0.06336  32.356   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 18.29 on 98 degrees of freedom\nMultiple R-squared:  0.9144,    Adjusted R-squared:  0.9135 \nF-statistic:  1047 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#regression-example-1",
-    "href": "2024-09-20-ml-intro/index.html#regression-example-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Regression Example",
-    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-98.143 -22.095  -1.385  25.940  83.795 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  -1.4562     7.3715  -0.198    0.844    \nx             2.1004     0.1267  16.574   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 36.58 on 98 degrees of freedom\nMultiple R-squared:  0.7371,    Adjusted R-squared:  0.7344 \nF-statistic: 274.7 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#regression-example-2",
-    "href": "2024-09-20-ml-intro/index.html#regression-example-2",
-    "title": "Introduction to Machine Learning",
-    "section": "Regression Example",
-    "text": "Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-171.749  -38.665   -2.423   45.395  146.641 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  -2.5483    12.9001  -0.198    0.844    \nx             2.1758     0.2218   9.811 3.12e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 64.02 on 98 degrees of freedom\nMultiple R-squared:  0.4955,    Adjusted R-squared:  0.4904 \nF-statistic: 96.25 on 1 and 98 DF,  p-value: 3.116e-16"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example",
-    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example",
-    "title": "Introduction to Machine Learning",
-    "section": "More Complex Regression Example",
-    "text": "More Complex Regression Example\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nage\nsex\nbmi\nchildren\nsmoker\nregion\ncharges\nobese\n\n\n\n\n19\nfemale\n27.900\n0\nyes\nsouthwest\n16884.924\nnot obese\n\n\n18\nmale\n33.770\n1\nno\nsoutheast\n1725.552\nobese\n\n\n28\nmale\n33.000\n3\nno\nsoutheast\n4449.462\nobese\n\n\n33\nmale\n22.705\n0\nno\nnorthwest\n21984.471\nnot obese\n\n\n32\nmale\n28.880\n0\nno\nnorthwest\n3866.855\nnot obese\n\n\n31\nfemale\n25.740\n0\nno\nsoutheast\n3756.622\nnot obese\n\n\n46\nfemale\n33.440\n1\nno\nsoutheast\n8240.590\nobese\n\n\n37\nfemale\n27.740\n3\nno\nnorthwest\n7281.506\nnot obese\n\n\n37\nmale\n29.830\n2\nno\nnortheast\n6406.411\nnot obese\n\n\n60\nfemale\n25.840\n0\nno\nnorthwest\n28923.137\nnot obese"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-1",
-    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-1",
-    "title": "Introduction to Machine Learning",
-    "section": "More Complex Regression Example",
-    "text": "More Complex Regression Example\n\nWhat do you think about the relationship between age and insurance charges?"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-2",
-    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-2",
-    "title": "Introduction to Machine Learning",
-    "section": "More Complex Regression Example",
-    "text": "More Complex Regression Example"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#more-complex-regression-example-3",
-    "href": "2024-09-20-ml-intro/index.html#more-complex-regression-example-3",
-    "title": "Introduction to Machine Learning",
-    "section": "More Complex Regression Example",
-    "text": "More Complex Regression Example\n\n\n\nCall:\nlm(formula = charges ~ age + smoker + sex + obese, data = insurance)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-13821.5  -3647.0   -225.8   1491.3  26884.1 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -4051.16     542.42  -7.469 1.46e-13 ***\nage           261.73      11.82  22.149  &lt; 2e-16 ***\nsmokeryes   23861.89     410.79  58.087  &lt; 2e-16 ***\nsexmale      -114.30     331.89  -0.344    0.731    \nobeseobese   4234.44     332.58  12.732  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 6044 on 1333 degrees of freedom\nMultiple R-squared:  0.7516,    Adjusted R-squared:  0.7509 \nF-statistic:  1008 on 4 and 1333 DF,  p-value: &lt; 2.2e-16"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\n\n\n\nCall:\nlm(formula = y ~ x)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-24.5356  -5.5236  -0.3462   6.4850  20.9487 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) -0.36404    1.84287  -0.198    0.844    \nx            2.02511    0.03168  63.920   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 9.145 on 98 degrees of freedom\nMultiple R-squared:  0.9766,    Adjusted R-squared:  0.9763 \nF-statistic:  4086 on 1 and 98 DF,  p-value: &lt; 2.2e-16"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-1",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\nAnscombe’s Quartet\nhttps://en.wikipedia.org/wiki/Anscombe%27s_quartet"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-2",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-2",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\nK-nearest neighbor (kNN) algorithm."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-3",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-3",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\nClassification and Regression Trees (CART)."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-4",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-4",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\nRandom Forests."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-5",
-    "href": "2024-09-20-ml-intro/index.html#algorithms-for-supervised-learning-5",
-    "title": "Introduction to Machine Learning",
-    "section": "Algorithms for Supervised Learning",
-    "text": "Algorithms for Supervised Learning\n\nDeep learning."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#applying-supervised-learning-algorithms",
-    "href": "2024-09-20-ml-intro/index.html#applying-supervised-learning-algorithms",
-    "title": "Introduction to Machine Learning",
-    "section": "Applying Supervised Learning Algorithms",
-    "text": "Applying Supervised Learning Algorithms\n\nThe mlr3 ecosystem in R."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#key-concepts-in-supervised-learning",
-    "href": "2024-09-20-ml-intro/index.html#key-concepts-in-supervised-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Key Concepts in Supervised Learning",
-    "text": "Key Concepts in Supervised Learning\n\nFeature Engineering\nModel Selection\nHyperparameter Tuning\nEnsemble Methods\nCross-Validation\nEvaluation Metrics\n\n\nBriefly explain each concept: 1. Feature Engineering: Creating new features or transforming existing ones to improve model performance 2. Model Selection: Choosing the appropriate algorithm for your problem 3. Hyperparameter Tuning: Optimizing model parameters that are not learned from data 4. Ensemble Methods: Combining multiple models to improve performance 5. Cross-Validation: Technique for assessing how the model will generalize to an independent dataset 6. Evaluation Metrics: Different ways to measure model performance (accuracy, precision, recall, F1-score, ROC curve, etc.)"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#challenges-in-machine-learning",
-    "href": "2024-09-20-ml-intro/index.html#challenges-in-machine-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Challenges in Machine Learning",
-    "text": "Challenges in Machine Learning\n\nData Quality and Quantity\nInterpretability vs Performance\nEthical Considerations and Bias\nComputational Resources\nModel Deployment and Maintenance\n\n\nDiscuss each challenge: 1. The importance of good, representative data and the challenges of data collection and cleaning 2. The tradeoff between complex, high-performing models and simpler, more interpretable ones 3. The risk of perpetuating or amplifying societal biases through ML models 4. The need for significant computational power, especially for deep learning models 5. The challenges of deploying models in production environments and keeping them updated"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#clustering",
-    "href": "2024-09-20-ml-intro/index.html#clustering",
-    "title": "Introduction to Machine Learning",
-    "section": "Clustering",
-    "text": "Clustering\n\nGene expression measurements."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#classes-of-unsupervised-learning-algorithms",
-    "href": "2024-09-20-ml-intro/index.html#classes-of-unsupervised-learning-algorithms",
-    "title": "Introduction to Machine Learning",
-    "section": "Classes of unsupervised learning algorithms",
-    "text": "Classes of unsupervised learning algorithms\n\n\n\n\n\nClustering.\n\n\n\n\n\n\nDimensionality reduction."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#clustering-1",
-    "href": "2024-09-20-ml-intro/index.html#clustering-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Clustering",
-    "text": "Clustering\n\nThinking about similarities and differences"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#clustering-2",
-    "href": "2024-09-20-ml-intro/index.html#clustering-2",
-    "title": "Introduction to Machine Learning",
-    "section": "Clustering",
-    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#clustering-3",
-    "href": "2024-09-20-ml-intro/index.html#clustering-3",
-    "title": "Introduction to Machine Learning",
-    "section": "Clustering",
-    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#clustering-4",
-    "href": "2024-09-20-ml-intro/index.html#clustering-4",
-    "title": "Introduction to Machine Learning",
-    "section": "Clustering",
-    "text": "Clustering\n\nAlgorithm for hierarchical clustering"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#dimensionality-reduction",
-    "href": "2024-09-20-ml-intro/index.html#dimensionality-reduction",
-    "title": "Introduction to Machine Learning",
-    "section": "Dimensionality Reduction",
-    "text": "Dimensionality Reduction\n\nSchematic PCA."
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#dimensionality-reduction-1",
-    "href": "2024-09-20-ml-intro/index.html#dimensionality-reduction-1",
-    "title": "Introduction to Machine Learning",
-    "section": "Dimensionality Reduction",
-    "text": "Dimensionality Reduction\n\nUsing dimensionality reduction to explore 22,000 dimensions of gene expression data on 280 samples.\nhttps://seandavi.github.io/ITR/geoquery_mds.html"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#future-directions-in-machine-learning",
-    "href": "2024-09-20-ml-intro/index.html#future-directions-in-machine-learning",
-    "title": "Introduction to Machine Learning",
-    "section": "Future Directions in Machine Learning",
-    "text": "Future Directions in Machine Learning\n\nAutoML: Automating the ML pipeline\nFederated Learning: Training models on decentralized data\nExplainable AI: Making black-box models more interpretable\nQuantum Machine Learning: Leveraging quantum computing for ML\nContinual Learning: Adapting to new data without forgetting old patterns"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#conclusion",
-    "href": "2024-09-20-ml-intro/index.html#conclusion",
-    "title": "Introduction to Machine Learning",
-    "section": "Conclusion",
-    "text": "Conclusion\n\nSupervised learning: Predicting outcomes based on labeled data\n\nClassification: Assigning labels to data\nRegression: Predicting continuous values\n\nUnsupervised learning: Finding patterns in unlabeled data\n\nClustering: Grouping similar data points\nDimensionality reduction: Simplifying complex data by reducing dimensions\n\nReinforcement learning: Learning through interaction with an environment"
-  },
-  {
-    "objectID": "2024-09-20-ml-intro/index.html#resources",
-    "href": "2024-09-20-ml-intro/index.html#resources",
-    "title": "Introduction to Machine Learning",
-    "section": "Resources",
-    "text": "Resources\n\nRecent reviews\n\nMachine Learning in Genomic Medicine: A Review of Computational Problems and Data Sets\nOpportunities And Obstacles For Deep Learning In Biology And Medicine\n\nHands-on Tutorials\n\nhttps://seandavi.github.io/RBiocBook\nMany online courses and tutorials\n\nBlogs and online materials\n\nhttps://blog.recast.ai/machine-learning-algorithms/\nhttps://www.youtube.com/channel/UCWN3xxRkmTPmbKwht9FuE5A\nhttps://www.youtube.com/c/joshstarmer\n\nMachine Learning in R\n\nhttps://www.datacamp.com/community/tutorials/machine-learning-in-r\nhttps://daviddalpiaz.github.io/r4sl/"
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Talks and Presentations",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in the Oncology Service Line\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in Medical Education\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 23, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI Agents\n\n\nLearn how large language models can be used as agents to solve complex tasks by interacting with external tools.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPrompt Engineering\n\n\nLearn design principles for effective prompts for language models to improve accuracy, usability, and relevance of model outputs.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 20, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 19, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nData products and partnerships\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nAugust 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nNovember 3, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nJuly 11, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nReproducible, reusable, and shareable concepts in computational research\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nMarch 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 7, 2022\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "2024-10-17-prompt-engineering/index.html#what-is-a-prompt-anyway",
