@@ -364,10 +364,18 @@ Sean Davis, MD, PhD
 <ol type="1">
 <li>Relationship between AI and ML</li>
 <li>Types of Machine Learning</li>
-<li>A little about data</li>
+<li>Small side-trip: a little about data</li>
 <li>Supervised Learning</li>
-<li>Unsupervised Learning</li>
 </ol>
+</section>
+<section id="learning-objectives" class="slide level2">
+<h2>Learning Objectives</h2>
+<ul>
+<li>Understand the relationship between artificial intelligence and machine learning.</li>
+<li>Be able to distinguish between regression and classification.</li>
+<li>State the “Golden Rule” of machine learning.</li>
+<li>Know that data is an essential part of machine learning.</li>
+</ul>
 </section>
 <section>
 <section id="artificial-intelligence-overview" class="title-slide slide level1 center">
@@ -378,8 +386,8 @@ Sean Davis, MD, PhD
 <h2></h2>
 <div class="cell">
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item" id="htmlwidget-6d024b0cb46a04b99c73" style="width:100%;height:600px;"></div>
-<script type="application/json" data-for="htmlwidget-6d024b0cb46a04b99c73">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],"label":["Artificial Intelligence","Symbolic AI","Evolutionary Algorithms","Logic-Based AI","Agent-Based AI","Neural-Symbolic AI","Machine Learning","Expert Systems","Knowledge Representation","Planning Systems","Genetic Algorithms","Evolutionary Programming","Automated Theorem Proving","Constraint Satisfaction Problems","Reinforcement Learning","Multi-Agent Systems","Hybrid AI Models","Knowledge-Infused Learning","Supervised Learning","Unsupervised Learning","Semi-Supervised Learning","Deep Learning"],"group":["AI","Symbolic","Evolutionary","Logic-Based","Agent-Based","Neural-Symbolic","Machine Learning","Symbolic","Symbolic","Symbolic","Evolutionary","Evolutionary","Logic-Based","Logic-Based","Agent-Based","Agent-Based","Neural-Symbolic","Neural-Symbolic","Machine Learning","Machine Learning","Machine Learning","Machine Learning"],"font.color":["white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white"]},"edges":{"from":[1,1,1,1,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,7,7],"to":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"groups":{"AI":{"color":"lightblue"},"Symbolic":{"color":"orange"},"Evolutionary":{"color":"lightgreen"},"Logic-Based":{"color":"yellow"},"Agent-Based":{"color":"pink"},"Neural-Symbolic":{"color":"purple"},"useDefaultGroups":true,"Machine Learning":{"color":"red"}},"edges":{"arrows":"to"}},"groups":["AI","Symbolic","Evolutionary","Logic-Based","Agent-Based","Neural-Symbolic","Machine Learning"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div class="visNetwork html-widget html-fill-item" id="htmlwidget-cbebeb90ef3aceccf1df" style="width:100%;height:600px;"></div>
+<script type="application/json" data-for="htmlwidget-cbebeb90ef3aceccf1df">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],"label":["Artificial Intelligence","Symbolic AI","Evolutionary Algorithms","Logic-Based AI","Agent-Based AI","Neural-Symbolic AI","Machine Learning","Expert Systems","Knowledge Representation","Planning Systems","Genetic Algorithms","Evolutionary Programming","Automated Theorem Proving","Constraint Satisfaction Problems","Reinforcement Learning","Multi-Agent Systems","Hybrid AI Models","Knowledge-Infused Learning","Supervised Learning","Unsupervised Learning","Semi-Supervised Learning","Deep Learning"],"group":["AI","Symbolic","Evolutionary","Logic-Based","Agent-Based","Neural-Symbolic","Machine Learning","Symbolic","Symbolic","Symbolic","Evolutionary","Evolutionary","Logic-Based","Logic-Based","Agent-Based","Agent-Based","Neural-Symbolic","Neural-Symbolic","Machine Learning","Machine Learning","Machine Learning","Machine Learning"],"font.color":["white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white","white"]},"edges":{"from":[1,1,1,1,1,1,2,2,2,3,3,4,4,5,5,6,6,7,7,7,7],"to":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"groups":{"AI":{"color":"lightblue"},"Symbolic":{"color":"orange"},"Evolutionary":{"color":"lightgreen"},"Logic-Based":{"color":"yellow"},"Agent-Based":{"color":"pink"},"Neural-Symbolic":{"color":"purple"},"useDefaultGroups":true,"Machine Learning":{"color":"red"}},"edges":{"arrows":"to"}},"groups":["AI","Symbolic","Evolutionary","Logic-Based","Agent-Based","Neural-Symbolic","Machine Learning"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <p>An ontology of AI.</p>
 </div>
 </div>
@@ -540,8 +548,8 @@ Sean Davis, MD, PhD
 <h2>An ontology of Data</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item" id="htmlwidget-c49f5916eada93143402" style="width:100%;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-c49f5916eada93143402">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11],"label":["ALL Data","Structured Data","Unstructured Data","Tabular Data","Text Data","Image Data","Audio Data","Video Data","Time Series Data","Spatial Data","Graph Data"],"group":["Data","Structured","Unstructured","Structured","Unstructured","Unstructured","Unstructured","Unstructured","Structured","Structured","Graph"],"font.color":["white","white","white","white","white","white","white","white","white","white","white"]},"edges":{"from":[1,1,2,3,3,3,3,2,2,1],"to":[2,3,4,5,6,7,8,9,10,11]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"groups":{"Data":{"color":"lightblue"},"Structured":{"color":"orange"},"Unstructured":{"color":"lightgreen"},"useDefaultGroups":true,"Graph":{"color":"yellow"}},"edges":{"arrows":"to"}},"groups":["Data","Structured","Unstructured","Graph"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div class="visNetwork html-widget html-fill-item" id="htmlwidget-641be875e9b07f476437" style="width:100%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-641be875e9b07f476437">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11],"label":["ALL Data","Structured Data","Unstructured Data","Tabular Data","Text Data","Image Data","Audio Data","Video Data","Time Series Data","Spatial Data","Graph Data"],"group":["Data","Structured","Unstructured","Structured","Unstructured","Unstructured","Unstructured","Unstructured","Structured","Structured","Graph"],"font.color":["white","white","white","white","white","white","white","white","white","white","white"]},"edges":{"from":[1,1,2,3,3,3,3,2,2,1],"to":[2,3,4,5,6,7,8,9,10,11]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"groups":{"Data":{"color":"lightblue"},"Structured":{"color":"orange"},"Unstructured":{"color":"lightgreen"},"useDefaultGroups":true,"Graph":{"color":"yellow"}},"edges":{"arrows":"to"}},"groups":["Data","Structured","Unstructured","Graph"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <p>One way to think about different classes of data.</p>
 </div>
 </div>
