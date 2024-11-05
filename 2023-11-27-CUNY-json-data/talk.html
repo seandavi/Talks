@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.19">
+<meta name="generator" content="quarto-1.6.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,10 +70,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-018089954d508eae8a473f0b7f0491f0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2486e1f0a3ee9ee1fc393803a1361cdb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-782b41af71c25dcbe5d3a762a8b89429.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5462d0dc975739fea4b7814f85fabdb2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -440,8 +440,8 @@ Tip
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 6
  $ version       : chr "6.9"
- $ hitCount      : int 14713
- $ nextCursorMark: chr "AoIIQIzHcyg1MTYwNDE3NA=="
+ $ hitCount      : int 14735
+ $ nextCursorMark: chr "AoIIQI1vSyg1MTYwNDE3NA=="
  $ nextPageUrl   : chr "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:\"vaccination\" AND TITLE:\"covid-19\"&amp;curs"| __truncated__
  $ request       :List of 6
   ..$ queryString: chr "TITLE:\"vaccination\" AND TITLE:\"covid-19\""
@@ -455,6 +455,12 @@ Tip
   .. ..$ id                   : chr [1:3] "39460358" "39220095" "39334217"
   .. ..$ source               : chr [1:3] "MED" "MED" "MED"
   .. ..$ pmid                 : chr [1:3] "39460358" "39220095" "39334217"
+  .. ..$ pmcid                : chr [1:3] "PMC11512328" "PMC11362975" "PMC11428539"
+  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:
+  .. .. ..$ fullTextId:List of 3
+  .. .. .. ..$ : chr "PMC11512328"
+  .. .. .. ..$ : chr "PMC11362975"
+  .. .. .. ..$ : chr "PMC11428539"
   .. ..$ doi                  : chr [1:3] "10.3390/vaccines12101193" "10.1002/rcr2.70008" "10.1186/s12889-024-20133-4"
   .. ..$ title                : chr [1:3] "Myocarditis Associated with COVID-19 Vaccination." "Relapsing polychondritis after COVID-19 vaccination." "Religious belongings and Covid-19 vaccination."
   .. ..$ authorString         : chr [1:3] "Florek K, Sokolski M." "Ito K, Ogawa T, Igarashi S, Miyai K, Sato K, Kawana A, Kimizuka Y." "Chakhunashvili K, Kvirkvelia E, Chakhunashvili DG."
@@ -464,11 +470,11 @@ Tip
   .. ..$ pubYear              : chr [1:3] "2024" "2024" "2024"
   .. ..$ journalIssn          : chr [1:3] "2076-393x" "2051-3380" "1471-2458"
   .. ..$ pageInfo             : chr [1:3] "1193" "e70008" "2585"
-  .. ..$ pubType              : chr [1:3] "review; journal article" "journal article; case reports; case-report" "research-article; journal article"
-  .. ..$ isOpenAccess         : chr [1:3] "N" "Y" "Y"
-  .. ..$ inEPMC               : chr [1:3] "N" "Y" "Y"
-  .. ..$ inPMC                : chr [1:3] "N" "Y" "Y"
-  .. ..$ hasPDF               : chr [1:3] "N" "Y" "Y"
+  .. ..$ pubType              : chr [1:3] "review-article; review; journal article" "journal article; case reports; case-report" "research-article; journal article"
+  .. ..$ isOpenAccess         : chr [1:3] "Y" "Y" "Y"
+  .. ..$ inEPMC               : chr [1:3] "Y" "Y" "Y"
+  .. ..$ inPMC                : chr [1:3] "Y" "Y" "Y"
+  .. ..$ hasPDF               : chr [1:3] "Y" "Y" "Y"
   .. ..$ hasBook              : chr [1:3] "N" "N" "N"
   .. ..$ hasSuppl             : chr [1:3] "N" "N" "N"
   .. ..$ citedByCount         : int [1:3] 0 0 0
@@ -478,13 +484,7 @@ Tip
   .. ..$ hasLabsLinks         : chr [1:3] "N" "Y" "N"
   .. ..$ hasTMAccessionNumbers: chr [1:3] "N" "N" "N"
   .. ..$ firstIndexDate       : chr [1:3] "2024-10-27" "2024-09-03" "2024-09-29"
-  .. ..$ firstPublicationDate : chr [1:3] "2024-10-19" "2024-08-30" "2024-09-27"
-  .. ..$ pmcid                : chr [1:3] NA "PMC11362975" "PMC11428539"
-  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:
-  .. .. ..$ fullTextId:List of 3
-  .. .. .. ..$ : NULL
-  .. .. .. ..$ : chr "PMC11362975"
-  .. .. .. ..$ : chr "PMC11428539"</code></pre>
+  .. ..$ firstPublicationDate : chr [1:3] "2024-10-19" "2024-08-30" "2024-09-27"</code></pre>
 </div>
 </div>
 <ul>
@@ -496,7 +496,7 @@ Tip
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>r_result<span class="sc">$</span>hitCount</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 14713</code></pre>
+<pre><code>[1] 14735</code></pre>
 </div>
 </div>
 <p>And we can do the same for “nested” elements of the list.</p>

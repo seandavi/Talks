@@ -6,8 +6,8 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-5223d57514b7f3c9e8f675d86406bf62.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.19">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6561bbde787c299e21493071c8edc6ff.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.32">
 
   <meta name="author" content="Sean Davis, MD, PhD">
   <title>Talks – Fairness in Machine Learning for Healthcare</title>
@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-ab62bd38567a7e49559c956ccbaa2327.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-1adedc77ec40ccfdb24d7cb0ec58540a.css">
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KLLV1GCF4E"></script>
 
   <script type="text/javascript">
@@ -345,12 +345,154 @@ Sean Davis, MD, PhD
 </div>
 
 </section>
+<section id="section" class="slide level2 center">
+<h2></h2>
+<div style="font-size: 2em;">
+<p>You are designing an image search engine (that will be powered by AI, of course), akin to Google Images.</p>
+</div>
+</section>
+<section id="section-1" class="slide level2 center">
+<h2></h2>
+<div class="center" style="font-size: 2em;">
+<p>On a technical level, that’s a piece of cake. You’re a great machine learning engineer, and this is basic stuff!</p>
+</div>
+</section>
+<section id="section-2" class="slide level2 center">
+<h2></h2>
+<div style="font-size: 2em;">
+<p>But say you live in a world where 90 percent of CEOs are male.</p>
+</div>
+</section>
+<section id="section-3" class="slide level2 center">
+<h2></h2>
+
+<img data-src="../images/fortune500-women-ceos-2023.png" class="r-stretch quarto-figure-center"><p class="caption">Sort of like this world.</p><div class="footer">
+<p><a href="https://fortune.com/2023/06/05/fortune-500-companies-2023-women-10-percent/" class="uri">https://fortune.com/2023/06/05/fortune-500-companies-2023-women-10-percent/</a></p>
+</div>
+</section>
+<section id="what-to-do" class="slide level2 center">
+<h2>What to do?</h2>
+<p>Should you design your search engine so that it <span class="fragment highlight-red">accurately mirrors that reality</span>, yielding images of man after man after man when a user types in “CEO”?</p>
+<p><br></p>
+<p>Or, since that <span class="fragment highlight-red">risks reinforcing gender stereotypes</span> that help keep women out of the C- suite, should you create a search engine that <span class="fragment highlight-red">deliberately shows a more balanced mix, even if it’s a mix that does not reflects reality</span> as it is today?</p>
+</section>
+<section id="section-4" class="slide level2 center" data-background-image="https://s31606.pcdn.co/wp-content/uploads/2018/10/iStock-491617258-e1539203793904-scaled.jpg" data-background-size="cover" data-background-opacity="0.6">
+<h2></h2>
+<div style="background-color: rgba(0, 0, 0, .35); backdrop-filter: blur(3px); padding: 1.2em; border-radius: 15px; text-align: center; font-size: 2.5em;">
+<p><strong><em>What is the problem here?</em></strong></p>
+</div>
+</section>
+<section id="what-is-bias" class="slide level2">
+<h2>What is Bias?</h2>
+<div class="fragment fade-in">
+<h3 id="social-bias">Social bias</h3>
+<p><strong>Definition:</strong> Systematic favoritism or discrimination.</p>
+<p><strong>Example:</strong> A hiring algorithm consistently rejects women is socially biased.</p>
+</div>
+<div class="fragment fade-in">
+<h3 id="statistical-bias">Statistical bias</h3>
+<p><strong>Definition:</strong> Systematic error in estimation.</p>
+<p><strong>Example:</strong> A weather app that always overestimates the probability of rain is statistically biased.</p>
+</div>
+</section>
+<section id="section-5" class="slide level2" data-background-image="https://www.workpsychologygroup.com/wp-content/uploads/2022/05/Perception-of-fairness-768x512.jpg" data-background-size="cover">
+<h2></h2>
+<div class="absolute" style="color: #000000; background-color: rgba(255, 255, 255, 0.6); padding: 0.3em; border-radius: 15px; backdrop-filter: blur(5px); box-shadow: 0 0 1rem 0 rgba(255, 255, 255, 0.5);top: 0%; left: -10%; width: 60%; ">
+<p>If there’s a predictable difference between two groups on average, then these <span class="fragment highlight-red">two definitions will be at odds</span>.</p>
+<p>If you design your search engine to make statistically unbiased predictions about the gender breakdown among CEOs, then it will necessarily be <span class="fragment highlight-red">biased in the social sense</span> of the word.</p>
+<p>And if you design it not to have its predictions correlate with gender, it will necessarily be <span class="fragment highlight-red">biased in the statistical sense.</span></p>
+</div>
+</section>
+<section>
+<section id="fairness" class="title-slide slide level1 center">
+<h1>Fairness</h1>
+
+</section>
+<section id="what-is-fairness" class="slide level2">
+<h2>What is Fairness?</h2>
+<iframe width="75%" height="75%" src="https://www.youtube.com/embed/jIXIuYdnyyk?si=L884uVQne87avK0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">
+</iframe>
+<ul>
+<li>At least 20 different definitions of fairness!</li>
+</ul>
+</section>
+<section id="what-do-the-big-players-do" class="slide level2">
+<h2>What do the big players do?</h2>
+<iframe width="100%" height="100%" src="https://ai.google/responsibility/principles/">
+</iframe>
+</section>
+<section id="what-do-the-big-players-do-1" class="slide level2">
+<h2>What do the big players do?</h2>
+<iframe width="100%" height="100%" src="https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4t6dA">
+</iframe>
+<div class="footer">
+<p><a href="https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4t6dA" class="uri">https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4t6dA</a></p>
+</div>
+</section>
+<section id="types-of-fairness" class="slide level2">
+<h2>Types of Fairness</h2>
+<ul>
+<li>Procedural Fairness</li>
+<li>Distributive Fairness</li>
+<li>Representational Fairness</li>
+</ul>
+</section>
+<section id="another-though-experiment" class="slide level2">
+<h2>Another though experiment</h2>
+<p>You are a bank officer charged with approving loans. You use an AI system to help you make decisions. That system is trained to predict who will repay a loan and who will not. The FICO score is a key factor in the system’s predictions.</p>
+</section>
+<section id="procedural-fairness" class="slide level2">
+<h2>Procedural Fairness</h2>
+<p><strong>An algorithm is procedurally fair if the procedure is uses to make decisions is fair.</strong></p>
+<p><span class="fragment">By this measure, your algorithm is fair. It uses a standard, well-established procedure to make its recommendations (the FICO score) and applies that procedure uniformly to all applicants.</span></p>
+</section>
+<section id="distributive-fairness" class="slide level2">
+<h2>Distributive Fairness</h2>
+
+<img data-src="../images/credit-score-biases-headline.png" class="r-stretch"><p>Another conception of fairness, known as <strong>distributive fairness</strong>, says that an algorithm is fair if it leads to fair outcomes. By this measure, your algorithm is failing, because its recommendations have a disparate impact on one racial group versus another.</p>
+</section>
+<section id="another-thought-experiment" class="slide level2">
+<h2>Another thought experiment</h2>
+
+<img data-src="../images/google-gorilla-black-faces.png" class="quarto-figure quarto-figure-center r-stretch"><div class="footer">
+<p><a href="https://archive.nytimes.com/bits.blogs.nytimes.com/2015/07/01/google-photos-mistakenly-labels-black-people-gorillas/" class="uri">https://archive.nytimes.com/bits.blogs.nytimes.com/2015/07/01/google-photos-mistakenly-labels-black-people-gorillas/</a></p>
+</div>
+</section>
+<section id="representational-fairness" class="slide level2">
+<h2>Representational Fairness</h2>
+<blockquote>
+<p>Breaches of representational fairness occur when systems reinforce the subordination of some groups along the lines of identity whether because the systems explicitly denigrate a group, stereotype a group, or fail to recognize a group and therefore render it invisible.</p>
+</blockquote>
+<p>– <a href="https://www.youtube.com/watch?v=fMym_BKWQzk&amp;t=1289s">Kate Crawford</a></p>
+</section>
+<section id="interaction" class="slide level2">
+<h2>Interaction</h2>
+<iframe src="https://app.sli.do/event/ncZSucfyDcLhkgRnzTipZR" height="100%" width="100%" frameborder="0" style="min-height: 560px;" allow="clipboard-write" title="Slido">
+</iframe>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <ul>
 <li>Machine Learning in Healthcare</li>
 <li>Importance of Fairness</li>
 <li>Overview of the Presentation</li>
+</ul>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p><img data-src="https://www.explainxkcd.com/wiki/images/4/48/ayn_random.png" class="absolute" style="top: 0%; right: 0%; height: 100%; "></p>
+<div class="absolute" style="rotate: -90deg; font-size: 0.2em;top: 50%; right: -20%; ">
+<p><a href="https://www.explainxkcd.com/wiki/index.php/1277:_Ayn_Random" class="uri">https://www.explainxkcd.com/wiki/index.php/1277:_Ayn_Random</a></p>
+</div>
+</section>
+<section id="bias-and-fairness" class="slide level2">
+<h2>Bias and Fairness</h2>
+</section>
+<section id="types-of-harm" class="slide level2">
+<h2>Types of Harm</h2>
+<ul>
+<li><p>Harms of Allocation (resources) Allocation of resources, opportunities, or information in a way that systematically disadvantages certain groups.</p></li>
+<li><p>Harms of Representation (identity) Representation of individuals or groups in a way that perpetuates stereotypes or biases.</p></li>
 </ul>
 </section>
 <section id="background-ml-in-healthcare" class="slide level2">
@@ -371,7 +513,7 @@ Sean Davis, MD, PhD
 <li>Legal and ethical considerations</li>
 <li>Building trust in ML systems</li>
 </ul>
-</section>
+</section></section>
 <section>
 <section id="sources-of-bias-in-healthcare-ml" class="title-slide slide level1 center">
 <h1>Sources of Bias in Healthcare ML</h1>
@@ -709,7 +851,8 @@ Sean Davis, MD, PhD
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
