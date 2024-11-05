@@ -676,7 +676,7 @@
     "href": "2023-11-27-CUNY-json-data/talk.html#working-with-json-in-r",
     "title": "Javascript Object Notation (JSON)",
     "section": "Working with JSON in R",
-    "text": "Working with JSON in R\nThe next steps in working with JSON from the web involve using a different client than a web browser. In this case, we will use R as our client.\nR has a number of packages that can be used to work with JSON, but we will focus on the jsonlite package.\nFirst, we need to install the package.\n\ninstall.packages(\"jsonlite\")\n\nThe jsonlite package provides a number of functions for working with JSON, but we will focus on the fromJSON() function, which converts JSON to an R object.\n\nlibrary(jsonlite)\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=3\"\nr_result &lt;- jsonlite::fromJSON(URL)\nclass(r_result)\n\n[1] \"list\"\n\n\nThe fromJSON() function returns a list, which is a common data structure in R. Let’s look at the structure of the list in R.\n\nstr(r_result)\n\nList of 6\n $ version       : chr \"6.9\"\n $ hitCount      : int 14735\n $ nextCursorMark: chr \"AoIIQI1vWig1MTYwNDE3NA==\"\n $ nextPageUrl   : chr \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"&curs\"| __truncated__\n $ request       :List of 6\n  ..$ queryString: chr \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n  ..$ resultType : chr \"lite\"\n  ..$ cursorMark : chr \"*\"\n  ..$ pageSize   : int 3\n  ..$ sort       : chr \"\"\n  ..$ synonym    : logi FALSE\n $ resultList    :List of 1\n  ..$ result:'data.frame':  3 obs. of  29 variables:\n  .. ..$ id                   : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ source               : chr [1:3] \"MED\" \"MED\" \"MED\"\n  .. ..$ pmid                 : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ pmcid                : chr [1:3] \"PMC11512328\" \"PMC11362975\" \"PMC11428539\"\n  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:\n  .. .. ..$ fullTextId:List of 3\n  .. .. .. ..$ : chr \"PMC11512328\"\n  .. .. .. ..$ : chr \"PMC11362975\"\n  .. .. .. ..$ : chr \"PMC11428539\"\n  .. ..$ doi                  : chr [1:3] \"10.3390/vaccines12101193\" \"10.1002/rcr2.70008\" \"10.1186/s12889-024-20133-4\"\n  .. ..$ title                : chr [1:3] \"Myocarditis Associated with COVID-19 Vaccination.\" \"Relapsing polychondritis after COVID-19 vaccination.\" \"Religious belongings and Covid-19 vaccination.\"\n  .. ..$ authorString         : chr [1:3] \"Florek K, Sokolski M.\" \"Ito K, Ogawa T, Igarashi S, Miyai K, Sato K, Kawana A, Kimizuka Y.\" \"Chakhunashvili K, Kvirkvelia E, Chakhunashvili DG.\"\n  .. ..$ journalTitle         : chr [1:3] \"Vaccines (Basel)\" \"Respirol Case Rep\" \"BMC Public Health\"\n  .. ..$ issue                : chr [1:3] \"10\" \"9\" \"1\"\n  .. ..$ journalVolume        : chr [1:3] \"12\" \"12\" \"24\"\n  .. ..$ pubYear              : chr [1:3] \"2024\" \"2024\" \"2024\"\n  .. ..$ journalIssn          : chr [1:3] \"2076-393x\" \"2051-3380\" \"1471-2458\"\n  .. ..$ pageInfo             : chr [1:3] \"1193\" \"e70008\" \"2585\"\n  .. ..$ pubType              : chr [1:3] \"review-article; review; journal article\" \"journal article; case reports; case-report\" \"research-article; journal article\"\n  .. ..$ isOpenAccess         : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ inEPMC               : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ inPMC                : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasPDF               : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasBook              : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasSuppl             : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ citedByCount         : int [1:3] 0 0 0\n  .. ..$ hasReferences        : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasTextMinedTerms    : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasDbCrossReferences : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasLabsLinks         : chr [1:3] \"N\" \"Y\" \"N\"\n  .. ..$ hasTMAccessionNumbers: chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ firstIndexDate       : chr [1:3] \"2024-10-27\" \"2024-09-03\" \"2024-09-29\"\n  .. ..$ firstPublicationDate : chr [1:3] \"2024-10-19\" \"2024-08-30\" \"2024-09-27\"\n\n\n\nCompare the structure of the list in R to the structure of the JSON in the browser.\nCompare the number of results in the JSON to the number of results in the R list.\nCompare the number of results in the R list to the number of results in the browser.\n\nWe can access individual elements of the list using the $ operator.\n\nr_result$hitCount\n\n[1] 14735\n\n\nAnd we can do the same for “nested” elements of the list.\n\nr_result$request$queryString\n\n[1] \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n\n\nNote that the “important” information comes into R as a data.frame, but it is “nested” inside the list. Let’s pull it out of the list and assign it to a variable.\n\ntop3_articles &lt;- r_result$resultList$result\n\nLet’s not stop with the top 3 articles and instead get the top 1000 articles. To do so, we simply change our URL to request 1000 results.\n\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=1000\"\nr_result &lt;- jsonlite::fromJSON(URL)\ntop1000_articles &lt;- r_result$resultList$result\n\nAnd now we can plot the number of articles by year.\n\nlibrary(ggplot2)\nggplot(top1000_articles, aes(x = pubYear)) +\n  geom_bar()"
+    "text": "Working with JSON in R\nThe next steps in working with JSON from the web involve using a different client than a web browser. In this case, we will use R as our client.\nR has a number of packages that can be used to work with JSON, but we will focus on the jsonlite package.\nFirst, we need to install the package.\n\ninstall.packages(\"jsonlite\")\n\nThe jsonlite package provides a number of functions for working with JSON, but we will focus on the fromJSON() function, which converts JSON to an R object.\n\nlibrary(jsonlite)\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=3\"\nr_result &lt;- jsonlite::fromJSON(URL)\nclass(r_result)\n\n[1] \"list\"\n\n\nThe fromJSON() function returns a list, which is a common data structure in R. Let’s look at the structure of the list in R.\n\nstr(r_result)\n\nList of 6\n $ version       : chr \"6.9\"\n $ hitCount      : int 14735\n $ nextCursorMark: chr \"AoIIQI1vRig1MTYwNDE3NA==\"\n $ nextPageUrl   : chr \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"&curs\"| __truncated__\n $ request       :List of 6\n  ..$ queryString: chr \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n  ..$ resultType : chr \"lite\"\n  ..$ cursorMark : chr \"*\"\n  ..$ pageSize   : int 3\n  ..$ sort       : chr \"\"\n  ..$ synonym    : logi FALSE\n $ resultList    :List of 1\n  ..$ result:'data.frame':  3 obs. of  29 variables:\n  .. ..$ id                   : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ source               : chr [1:3] \"MED\" \"MED\" \"MED\"\n  .. ..$ pmid                 : chr [1:3] \"39460358\" \"39220095\" \"39334217\"\n  .. ..$ pmcid                : chr [1:3] \"PMC11512328\" \"PMC11362975\" \"PMC11428539\"\n  .. ..$ fullTextIdList       :'data.frame':    3 obs. of  1 variable:\n  .. .. ..$ fullTextId:List of 3\n  .. .. .. ..$ : chr \"PMC11512328\"\n  .. .. .. ..$ : chr \"PMC11362975\"\n  .. .. .. ..$ : chr \"PMC11428539\"\n  .. ..$ doi                  : chr [1:3] \"10.3390/vaccines12101193\" \"10.1002/rcr2.70008\" \"10.1186/s12889-024-20133-4\"\n  .. ..$ title                : chr [1:3] \"Myocarditis Associated with COVID-19 Vaccination.\" \"Relapsing polychondritis after COVID-19 vaccination.\" \"Religious belongings and Covid-19 vaccination.\"\n  .. ..$ authorString         : chr [1:3] \"Florek K, Sokolski M.\" \"Ito K, Ogawa T, Igarashi S, Miyai K, Sato K, Kawana A, Kimizuka Y.\" \"Chakhunashvili K, Kvirkvelia E, Chakhunashvili DG.\"\n  .. ..$ journalTitle         : chr [1:3] \"Vaccines (Basel)\" \"Respirol Case Rep\" \"BMC Public Health\"\n  .. ..$ issue                : chr [1:3] \"10\" \"9\" \"1\"\n  .. ..$ journalVolume        : chr [1:3] \"12\" \"12\" \"24\"\n  .. ..$ pubYear              : chr [1:3] \"2024\" \"2024\" \"2024\"\n  .. ..$ journalIssn          : chr [1:3] \"2076-393x\" \"2051-3380\" \"1471-2458\"\n  .. ..$ pageInfo             : chr [1:3] \"1193\" \"e70008\" \"2585\"\n  .. ..$ pubType              : chr [1:3] \"review-article; review; journal article\" \"journal article; case reports; case-report\" \"research-article; journal article\"\n  .. ..$ isOpenAccess         : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ inEPMC               : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ inPMC                : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasPDF               : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasBook              : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasSuppl             : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ citedByCount         : int [1:3] 0 0 0\n  .. ..$ hasReferences        : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasTextMinedTerms    : chr [1:3] \"Y\" \"Y\" \"Y\"\n  .. ..$ hasDbCrossReferences : chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ hasLabsLinks         : chr [1:3] \"N\" \"Y\" \"N\"\n  .. ..$ hasTMAccessionNumbers: chr [1:3] \"N\" \"N\" \"N\"\n  .. ..$ firstIndexDate       : chr [1:3] \"2024-10-27\" \"2024-09-03\" \"2024-09-29\"\n  .. ..$ firstPublicationDate : chr [1:3] \"2024-10-19\" \"2024-08-30\" \"2024-09-27\"\n\n\n\nCompare the structure of the list in R to the structure of the JSON in the browser.\nCompare the number of results in the JSON to the number of results in the R list.\nCompare the number of results in the R list to the number of results in the browser.\n\nWe can access individual elements of the list using the $ operator.\n\nr_result$hitCount\n\n[1] 14735\n\n\nAnd we can do the same for “nested” elements of the list.\n\nr_result$request$queryString\n\n[1] \"TITLE:\\\"vaccination\\\" AND TITLE:\\\"covid-19\\\"\"\n\n\nNote that the “important” information comes into R as a data.frame, but it is “nested” inside the list. Let’s pull it out of the list and assign it to a variable.\n\ntop3_articles &lt;- r_result$resultList$result\n\nLet’s not stop with the top 3 articles and instead get the top 1000 articles. To do so, we simply change our URL to request 1000 results.\n\nURL &lt;- \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=TITLE:%22vaccination%22+AND+TITLE:%22covid-19%22&format=json&pageSize=1000\"\nr_result &lt;- jsonlite::fromJSON(URL)\ntop1000_articles &lt;- r_result$resultList$result\n\nAnd now we can plot the number of articles by year.\n\nlibrary(ggplot2)\nggplot(top1000_articles, aes(x = pubYear)) +\n  geom_bar()"
   },
   {
     "objectID": "2023-11-27-CUNY-json-data/talk.html#dont-stop-there",
@@ -700,11 +700,228 @@
     "text": "References\n\nhttps://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html"
   },
   {
+    "objectID": "2024-11-05-ml-fairness/index.html#section",
+    "href": "2024-11-05-ml-fairness/index.html#section",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "You are designing an image search engine (that will be powered by AI, of course), akin to Google Images."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-1",
+    "href": "2024-11-05-ml-fairness/index.html#section-1",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "On a technical level, that’s a piece of cake. You’re a great machine learning engineer, and this is basic stuff!"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-2",
+    "href": "2024-11-05-ml-fairness/index.html#section-2",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "But say you live in a world where 90 percent of CEOs are male."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-3",
+    "href": "2024-11-05-ml-fairness/index.html#section-3",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "Sort of like this world.\nhttps://fortune.com/2023/06/05/fortune-500-companies-2023-women-10-percent/"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#what-to-do",
+    "href": "2024-11-05-ml-fairness/index.html#what-to-do",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "What to do?",
+    "text": "What to do?\nShould you design your search engine so that it accurately mirrors that reality, yielding images of man after man after man when a user types in “CEO”?\n\nOr, since that risks reinforcing gender stereotypes that help keep women out of the C- suite, should you create a search engine that deliberately shows a more balanced mix, even if it’s a mix that does not reflects reality as it is today?"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-4",
+    "href": "2024-11-05-ml-fairness/index.html#section-4",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "What is the problem here?"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#what-is-bias",
+    "href": "2024-11-05-ml-fairness/index.html#what-is-bias",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "What is Bias?",
+    "text": "What is Bias?\n\nSocial bias\nDefinition: Systematic favoritism or discrimination.\nExample: A hiring algorithm consistently rejects women is socially biased.\n\n\nStatistical bias\nDefinition: Systematic error in estimation.\nExample: A weather app that always overestimates the probability of rain is statistically biased."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-5",
+    "href": "2024-11-05-ml-fairness/index.html#section-5",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "If there’s a predictable difference between two groups on average, then these two definitions will be at odds.\nIf you design your search engine to make statistically unbiased predictions about the gender breakdown among CEOs, then it will necessarily be biased in the social sense of the word.\nAnd if you design it not to have its predictions correlate with gender, it will necessarily be biased in the statistical sense."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#what-is-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#what-is-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "What is Fairness?",
+    "text": "What is Fairness?\n\n\n\nAt least 20 different definitions of fairness!"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#what-do-the-big-players-do",
+    "href": "2024-11-05-ml-fairness/index.html#what-do-the-big-players-do",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "What do the big players do?",
+    "text": "What do the big players do?"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#what-do-the-big-players-do-1",
+    "href": "2024-11-05-ml-fairness/index.html#what-do-the-big-players-do-1",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "What do the big players do?",
+    "text": "What do the big players do?\n\n\n\nhttps://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4t6dA"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#types-of-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#types-of-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Types of Fairness",
+    "text": "Types of Fairness\n\nProcedural Fairness\nDistributive Fairness\nRepresentational Fairness"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#another-though-experiment",
+    "href": "2024-11-05-ml-fairness/index.html#another-though-experiment",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Another though experiment",
+    "text": "Another though experiment\nYou are a bank officer charged with approving loans. You use an AI system to help you make decisions. That system is trained to predict who will repay a loan and who will not. The FICO score is a key factor in the system’s predictions."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#procedural-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#procedural-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Procedural Fairness",
+    "text": "Procedural Fairness\nAn algorithm is procedurally fair if the procedure is uses to make decisions is fair.\nBy this measure, your algorithm is fair. It uses a standard, well-established procedure to make its recommendations (the FICO score) and applies that procedure uniformly to all applicants."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#distributive-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#distributive-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Distributive Fairness",
+    "text": "Distributive Fairness\n\nAnother conception of fairness, known as distributive fairness, says that an algorithm is fair if it leads to fair outcomes. By this measure, your algorithm is failing, because its recommendations have a disparate impact on one racial group versus another."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#another-thought-experiment",
+    "href": "2024-11-05-ml-fairness/index.html#another-thought-experiment",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Another thought experiment",
+    "text": "Another thought experiment\n\n\nhttps://archive.nytimes.com/bits.blogs.nytimes.com/2015/07/01/google-photos-mistakenly-labels-black-people-gorillas/"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#representational-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#representational-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Representational Fairness",
+    "text": "Representational Fairness\n\nBreaches of representational fairness occur when systems reinforce the subordination of some groups along the lines of identity whether because the systems explicitly denigrate a group, stereotype a group, or fail to recognize a group and therefore render it invisible.\n\n– Kate Crawford"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#interaction",
+    "href": "2024-11-05-ml-fairness/index.html#interaction",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Interaction",
+    "text": "Interaction"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#introduction",
+    "href": "2024-11-05-ml-fairness/index.html#introduction",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Introduction",
+    "text": "Introduction\n\nMachine Learning in Healthcare\nImportance of Fairness\nOverview of the Presentation"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#section-6",
+    "href": "2024-11-05-ml-fairness/index.html#section-6",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "",
+    "text": "https://www.explainxkcd.com/wiki/index.php/1277:_Ayn_Random"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#bias-and-fairness",
+    "href": "2024-11-05-ml-fairness/index.html#bias-and-fairness",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Bias and Fairness",
+    "text": "Bias and Fairness"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#types-of-harm",
+    "href": "2024-11-05-ml-fairness/index.html#types-of-harm",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Types of Harm",
+    "text": "Types of Harm\n\nHarms of Allocation (resources) Allocation of resources, opportunities, or information in a way that systematically disadvantages certain groups.\nHarms of Representation (identity) Representation of individuals or groups in a way that perpetuates stereotypes or biases."
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#background-ml-in-healthcare",
+    "href": "2024-11-05-ml-fairness/index.html#background-ml-in-healthcare",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Background: ML in Healthcare",
+    "text": "Background: ML in Healthcare\n\nDiagnosis assistance\nTreatment planning\nRisk prediction\nResource allocation\nDrug discovery"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#why-fairness-matters-in-healthcare-ml",
+    "href": "2024-11-05-ml-fairness/index.html#why-fairness-matters-in-healthcare-ml",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Why Fairness Matters in Healthcare ML",
+    "text": "Why Fairness Matters in Healthcare ML\n\nEqual access to quality healthcare\nAvoiding perpetuation of historical biases\nLegal and ethical considerations\nBuilding trust in ML systems"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#sources-of-bias-in-healthcare-ml",
+    "href": "2024-11-05-ml-fairness/index.html#sources-of-bias-in-healthcare-ml",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Sources of Bias in Healthcare ML",
+    "text": "Sources of Bias in Healthcare ML\n\nData Collection Bias\nSampling Bias\nLabel Bias\nFeature Selection Bias\nAlgorithmic Bias"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#bias-in-healthcare-ml",
+    "href": "2024-11-05-ml-fairness/index.html#bias-in-healthcare-ml",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Bias in Healthcare ML",
+    "text": "Bias in Healthcare ML"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#bias-mitigation-strategies",
+    "href": "2024-11-05-ml-fairness/index.html#bias-mitigation-strategies",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Bias mitigation strategies",
+    "text": "Bias mitigation strategies"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#other-fairness-aware-ml-techniques",
+    "href": "2024-11-05-ml-fairness/index.html#other-fairness-aware-ml-techniques",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Other Fairness-Aware ML Techniques",
+    "text": "Other Fairness-Aware ML Techniques\n\nReweighting\nAdversarial Debiasing\nFair Representation Learning\nPost-processing Methods"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#implementing-fairness-in-healthcare-ml",
+    "href": "2024-11-05-ml-fairness/index.html#implementing-fairness-in-healthcare-ml",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Implementing Fairness in Healthcare ML",
+    "text": "Implementing Fairness in Healthcare ML\n\nCollect diverse and representative data\nChoose appropriate fairness metric for the context\nImplement fairness-aware algorithms\nRegularly audit model performance across groups\nInvolve diverse stakeholders in development and deployment"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#ethical-considerations",
+    "href": "2024-11-05-ml-fairness/index.html#ethical-considerations",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Ethical Considerations",
+    "text": "Ethical Considerations\n\nTransparency and explainability\nInformed consent for data usage\nPrivacy concerns\nPotential for unintended consequences"
+  },
+  {
+    "objectID": "2024-11-05-ml-fairness/index.html#conclusion",
+    "href": "2024-11-05-ml-fairness/index.html#conclusion",
+    "title": "Fairness in Machine Learning for Healthcare",
+    "section": "Conclusion",
+    "text": "Conclusion\n\nFairness in healthcare ML is crucial but complex\nNo one-size-fits-all solution\nBalancing act: fairness, accuracy, and domain-specific considerations\nOngoing research and ethical considerations are key\nCollaboration across disciplines is essential!"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Talks and Presentations",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nGentle Introduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 31, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in the Oncology Service Line\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in Medical Education\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 23, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI Agents\n\n\nLearn how large language models can be used as agents to solve complex tasks by interacting with external tools.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPrompt Engineering\n\n\nLearn design principles for effective prompts for language models to improve accuracy, usability, and relevance of model outputs.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 20, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 19, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nData products and partnerships\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nAugust 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nNovember 3, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nJuly 11, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nReproducible, reusable, and shareable concepts in computational research\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nMarch 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 7, 2022\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nFairness in Machine Learning for Healthcare\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nNovember 5, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGentle Introduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 31, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in the Oncology Service Line\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 28, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI in Medical Education\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 23, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI Agents\n\n\nLearn how large language models can be used as agents to solve complex tasks by interacting with external tools.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPrompt Engineering\n\n\nLearn design principles for effective prompts for language models to improve accuracy, usability, and relevance of model outputs.\n\n\n\nSean Davis, MD, PhD\n\n\nOctober 17, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction to Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 20, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe History of Artificial Intelligence and Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 19, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nData products and partnerships\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nAugust 30, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nNovember 3, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nJuly 11, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nReproducible, reusable, and shareable concepts in computational research\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nMarch 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nArtificial Intelligence & Machine Learning\n\n\n\n\n\n\nSean Davis, MD, PhD\n\n\nSeptember 7, 2022\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "lecture_notes/deep-learning-and-cnns.html",
